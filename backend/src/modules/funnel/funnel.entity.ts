@@ -89,7 +89,7 @@ export class Funnel extends TenantBaseEntity {
   createdBy: string;
 
   @Column({ type: 'timestamp', nullable: true })
-  publishedAt: Date;
+  publishedAt?: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   lastEditedAt: Date;

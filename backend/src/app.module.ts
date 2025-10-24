@@ -10,6 +10,7 @@ import { getDatabaseConfig } from './config/database.config';
 import { TenantModule } from './modules/tenant/tenant.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { FunnelModule } from './modules/funnel/funnel.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 
@@ -41,6 +42,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     TenantModule,
     UserModule,
     AuthModule,
+    FunnelModule,
   ],
   controllers: [AppController],
   providers: [

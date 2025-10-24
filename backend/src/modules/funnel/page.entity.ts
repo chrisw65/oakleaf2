@@ -91,7 +91,7 @@ export class Page extends TenantBaseEntity {
   isPublished: boolean;
 
   @Column({ type: 'timestamp', nullable: true })
-  publishedAt: Date;
+  publishedAt?: Date;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   thumbnail: string;
