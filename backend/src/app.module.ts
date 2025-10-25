@@ -11,6 +11,7 @@ import { TenantModule } from './modules/tenant/tenant.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { FunnelModule } from './modules/funnel/funnel.module';
+import { AffiliateModule } from './modules/affiliate/affiliate.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 
@@ -43,6 +44,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     UserModule,
     AuthModule,
     FunnelModule,
+    AffiliateModule,
   ],
   controllers: [AppController],
   providers: [
