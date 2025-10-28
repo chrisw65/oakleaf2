@@ -14,6 +14,7 @@ import { FunnelModule } from './modules/funnel/funnel.module';
 import { AffiliateModule } from './modules/affiliate/affiliate.module';
 import { CrmModule } from './modules/crm/crm.module';
 import { OrderModule } from './modules/order/order.module';
+import { EmailModule } from './modules/email/email.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 
@@ -49,6 +50,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     AffiliateModule,
     CrmModule,
     OrderModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [
