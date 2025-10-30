@@ -2,8 +2,10 @@ import { Entity, Column, Index, ManyToOne, JoinColumn, OneToMany } from 'typeorm
 import { TenantBaseEntity } from '../../common/entities/tenant-base.entity';
 import { User } from '../user/user.entity';
 import { Funnel } from './funnel.entity';
+import { TemplateCategory } from './template-category.entity';
+import { TemplateReview } from './template-review.entity';
 
-export enum TemplateCategory {
+export enum FunnelTemplateCategory {
   LEAD_GENERATION = 'lead_generation',
   SALES = 'sales',
   WEBINAR = 'webinar',
@@ -40,12 +42,15 @@ export class FunnelTemplate extends TenantBaseEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({
-    type: 'enum',
-    enum: TemplateCategory,
-  })
+  @Column({ name: 'category_id', type: 'uuid', nullable: true })
   @Index()
-  category: TemplateCategory;
+  categoryId?: string;
+
+  @ManyToOne(() => TemplateCategory, (category) => category.templates, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'category_id' })
+  category?: TemplateCategory;
 
   @Column({ type: 'enum', enum: TemplateStatus, default: TemplateStatus.ACTIVE })
   @Index()
@@ -63,14 +68,18 @@ export class FunnelTemplate extends TenantBaseEntity {
 
   @Column({ type: 'jsonb' })
   structure: {
+    funnelType: string;
     pages: Array<{
       name: string;
-      type: string;
+      slug: string;
+      pageType: string;
       content: any;
-      settings: any;
+      styles: any;
+      seoSettings: any;
+      order: number;
     }>;
     settings: any;
-    theme: any;
+    theme?: any;
   };
 
   @Column({ type: 'boolean', default: false })
@@ -88,6 +97,12 @@ export class FunnelTemplate extends TenantBaseEntity {
   @Column({ type: 'decimal', precision: 3, scale: 2, default: 0 })
   rating: number;
 
+  @Column({ type: 'decimal', precision: 3, scale: 2, default: 0 })
+  averageRating: number;
+
+  @Column({ type: 'integer', default: 0 })
+  reviewCount: number;
+
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
   averageConversionRate: number;
 
@@ -103,4 +118,7 @@ export class FunnelTemplate extends TenantBaseEntity {
   // Relations
   @OneToMany(() => Funnel, (funnel) => funnel.template)
   funnels: Funnel[];
+
+  @OneToMany(() => TemplateReview, (review) => review.template)
+  reviews: TemplateReview[];
 }
