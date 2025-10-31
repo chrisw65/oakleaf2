@@ -1,0 +1,203 @@
+═══════════════════════════════════════════════════════════════
+                    OAKLEAF - COMMAND CHEAT SHEET
+═══════════════════════════════════════════════════════════════
+
+🚀 INITIAL SETUP (Run Once on Your Mac)
+───────────────────────────────────────────────────────────────
+
+docker run -d --name oakleaf-postgres \
+  -e POSTGRES_USER=oakleaf_user \
+  -e POSTGRES_PASSWORD=oakleaf_secure_pass_2024 \
+  -e POSTGRES_DB=oakleaf_funnel_db \
+  -p 5433:5432 \
+  -v oakleaf-postgres-data:/var/lib/postgresql/data \
+  postgres:15-alpine
+
+cd backend
+npm install
+
+═══════════════════════════════════════════════════════════════
+
+📆 DAILY COMMANDS
+───────────────────────────────────────────────────────────────
+
+# Start Day
+docker start oakleaf-postgres
+cd backend && npm run start:dev
+
+# End Day
+Ctrl+C (stop backend)
+docker stop oakleaf-postgres
+
+═══════════════════════════════════════════════════════════════
+
+🐳 DOCKER MANAGEMENT
+───────────────────────────────────────────────────────────────
+
+# Status
+docker ps | grep oakleaf-postgres
+
+# Start/Stop/Restart
+docker start oakleaf-postgres
+docker stop oakleaf-postgres
+docker restart oakleaf-postgres
+
+# Logs
+docker logs oakleaf-postgres
+docker logs -f oakleaf-postgres  # Follow
+
+# Stats
+docker stats oakleaf-postgres --no-stream
+
+═══════════════════════════════════════════════════════════════
+
+🗄️  DATABASE COMMANDS
+───────────────────────────────────────────────────────────────
+
+# Connect to PostgreSQL
+docker exec -it oakleaf-postgres psql -U oakleaf_user -d oakleaf_funnel_db
+
+# Inside psql:
+\dt              # List tables
+\d table_name    # Describe table
+\q               # Exit
+
+# Backup
+docker exec oakleaf-postgres pg_dump -U oakleaf_user oakleaf_funnel_db > backup.sql
+
+# Restore
+cat backup.sql | docker exec -i oakleaf-postgres psql -U oakleaf_user oakleaf_funnel_db
+
+# Database size
+docker exec oakleaf-postgres psql -U oakleaf_user -d oakleaf_funnel_db \
+  -c "SELECT pg_size_pretty(pg_database_size('oakleaf_funnel_db'));"
+
+═══════════════════════════════════════════════════════════════
+
+🧪 TESTING COMMANDS
+───────────────────────────────────────────────────────────────
+
+# Health check
+curl http://localhost:3000/api/v1/health
+
+# Register user
+curl -X POST http://localhost:3000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@oakleaf.com","password":"SecurePass123!","firstName":"Admin","lastName":"User"}'
+
+# Login
+curl -X POST http://localhost:3000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@oakleaf.com","password":"SecurePass123!"}'
+
+# Save token
+export TOKEN="your-jwt-token-here"
+
+# Test endpoints (with auth)
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:3000/api/v1/funnels/page-builder/templates
+
+═══════════════════════════════════════════════════════════════
+
+🔧 BACKEND COMMANDS
+───────────────────────────────────────────────────────────────
+
+cd backend
+
+# Development
+npm run start:dev
+
+# Production
+npm run build
+npm run start:prod
+
+# Tests
+npm test
+npm run test:watch
+
+# Linting
+npm run lint
+
+═══════════════════════════════════════════════════════════════
+
+🧹 CLEANUP COMMANDS
+───────────────────────────────────────────────────────────────
+
+# Stop & remove container (keeps data)
+docker stop oakleaf-postgres
+docker rm oakleaf-postgres
+
+# Remove volume (DELETES ALL DATA!)
+docker volume rm oakleaf-postgres-data
+
+# Remove network
+docker network rm oakleaf-network
+
+# Full cleanup
+docker stop oakleaf-postgres
+docker rm oakleaf-postgres
+docker volume rm oakleaf-postgres-data
+docker network rm oakleaf-network
+
+═══════════════════════════════════════════════════════════════
+
+🔍 TROUBLESHOOTING COMMANDS
+───────────────────────────────────────────────────────────────
+
+# Check if port is in use
+lsof -i :5433
+lsof -i :3000
+
+# Check Docker
+docker --version
+docker ps -a
+docker images
+
+# Check container health
+docker inspect oakleaf-postgres | grep Status
+
+# View all logs
+docker logs --tail 100 oakleaf-postgres
+
+# Test database connection
+docker exec oakleaf-postgres pg_isready -U oakleaf_user
+
+═══════════════════════════════════════════════════════════════
+
+🔗 IMPORTANT URLS
+───────────────────────────────────────────────────────────────
+
+Backend API:      http://localhost:3000
+API Endpoints:    http://localhost:3000/api/v1
+Health Check:     http://localhost:3000/api/v1/health
+
+Database:         localhost:5433
+Container:        oakleaf-postgres
+Network:          oakleaf-network
+Volume:           oakleaf-postgres-data
+
+═══════════════════════════════════════════════════════════════
+
+📝 QUICK REFERENCE
+───────────────────────────────────────────────────────────────
+
+User:     oakleaf_user
+Pass:     oakleaf_secure_pass_2024
+DB:       oakleaf_funnel_db
+Port:     5433 (NOT 5432!)
+
+Branch:   claude/sales-funnel-platform-011CURfLqBRWDq7XAQFahstY
+Commit:   8843e8c
+
+═══════════════════════════════════════════════════════════════
+
+📚 MORE HELP
+───────────────────────────────────────────────────────────────
+
+QUICK-START.md    - Quick reference guide
+DEPLOYMENT.md     - Complete deployment guide
+SETUP-COMPLETE.md - Setup summary
+
+./docker-commands.sh - Container management script
+
+═══════════════════════════════════════════════════════════════

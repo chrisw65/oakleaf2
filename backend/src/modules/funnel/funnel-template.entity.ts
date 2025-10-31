@@ -1,7 +1,11 @@
-import { Entity, Column, Index } from 'typeorm';
+import { Entity, Column, Index, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { TenantBaseEntity } from '../../common/entities/tenant-base.entity';
+import { User } from '../user/user.entity';
+import { Funnel } from './funnel.entity';
+import { TemplateCategory } from './template-category.entity';
+import { TemplateReview } from './template-review.entity';
 
-export enum TemplateCategory {
+export enum FunnelTemplateCategory {
   LEAD_GENERATION = 'lead_generation',
   SALES = 'sales',
   WEBINAR = 'webinar',
@@ -12,7 +16,18 @@ export enum TemplateCategory {
   REAL_ESTATE = 'real_estate',
   HEALTH = 'health',
   EDUCATION = 'education',
+  PRODUCT_LAUNCH = 'product_launch',
+  TRIPWIRE = 'tripwire',
+  MEMBERSHIP = 'membership',
+  CONSULTATION = 'consultation',
+  EVENT = 'event',
   OTHER = 'other',
+}
+
+export enum TemplateStatus {
+  ACTIVE = 'active',
+  DRAFT = 'draft',
+  ARCHIVED = 'archived',
 }
 
 @Entity('funnel_templates')
@@ -20,29 +35,51 @@ export class FunnelTemplate extends TenantBaseEntity {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
+  @Column({ type: 'varchar', length: 255, unique: true })
+  @Index()
+  slug: string;
+
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({
-    type: 'enum',
-    enum: TemplateCategory,
-  })
+  @Column({ name: 'category_id', type: 'uuid', nullable: true })
   @Index()
-  category: TemplateCategory;
+  categoryId?: string;
+
+  @ManyToOne(() => TemplateCategory, (category) => category.templates, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'category_id' })
+  category?: TemplateCategory;
+
+  @Column({ type: 'enum', enum: TemplateStatus, default: TemplateStatus.ACTIVE })
+  @Index()
+  status: TemplateStatus;
+
+  @Column({ name: 'created_by', type: 'uuid', nullable: true })
+  createdBy?: string;
+
+  @ManyToOne(() => User, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'created_by' })
+  creator?: User;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   thumbnail: string;
 
   @Column({ type: 'jsonb' })
   structure: {
+    funnelType: string;
     pages: Array<{
       name: string;
-      type: string;
+      slug: string;
+      pageType: string;
       content: any;
-      settings: any;
+      styles: any;
+      seoSettings: any;
+      order: number;
     }>;
     settings: any;
-    theme: any;
+    theme?: any;
   };
 
   @Column({ type: 'boolean', default: false })
@@ -51,15 +88,37 @@ export class FunnelTemplate extends TenantBaseEntity {
   @Column({ type: 'boolean', default: false })
   isPremium: boolean;
 
+  @Column({ type: 'boolean', default: false })
+  isFeatured: boolean;
+
   @Column({ type: 'integer', default: 0 })
   usageCount: number;
 
   @Column({ type: 'decimal', precision: 3, scale: 2, default: 0 })
   rating: number;
 
+  @Column({ type: 'decimal', precision: 3, scale: 2, default: 0 })
+  averageRating: number;
+
+  @Column({ type: 'integer', default: 0 })
+  reviewCount: number;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  averageConversionRate: number;
+
   @Column({ type: 'simple-array', nullable: true })
   tags: string[];
 
   @Column({ type: 'simple-array', nullable: true })
   industries: string[];
+
+  @Column({ type: 'jsonb', default: '{}' })
+  metadata: Record<string, any>;
+
+  // Relations
+  @OneToMany(() => Funnel, (funnel) => funnel.template)
+  funnels: Funnel[];
+
+  @OneToMany(() => TemplateReview, (review) => review.template)
+  reviews: TemplateReview[];
 }
