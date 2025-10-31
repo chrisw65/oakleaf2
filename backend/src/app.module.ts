@@ -18,6 +18,7 @@ import { EmailModule } from './modules/email/email.module';
 import { WebhookModule } from './modules/webhook/webhook.module';
 import { RbacModule } from './modules/rbac/rbac.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import { CacheModule } from './common/cache/cache.module';
 import { QueueModule } from './common/queue/queue.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -63,6 +64,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     OrderModule,
     EmailModule,
     WebhookModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [
