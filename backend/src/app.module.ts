@@ -24,6 +24,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { TwoFactorModule } from './modules/two-factor/two-factor.module';
 import { ApiKeyModule } from './modules/api-key/api-key.module';
+import { CustomDomainModule } from './modules/custom-domain/custom-domain.module';
 import { CacheModule } from './common/cache/cache.module';
 import { QueueModule } from './common/queue/queue.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -63,6 +64,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     AdminModule,
     TwoFactorModule,
     ApiKeyModule,
+    CustomDomainModule,
 
     // Feature Modules
     TenantModule,
