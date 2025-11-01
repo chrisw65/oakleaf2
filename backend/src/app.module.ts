@@ -25,6 +25,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { TwoFactorModule } from './modules/two-factor/two-factor.module';
 import { ApiKeyModule } from './modules/api-key/api-key.module';
 import { CustomDomainModule } from './modules/custom-domain/custom-domain.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { CacheModule } from './common/cache/cache.module';
 import { QueueModule } from './common/queue/queue.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -65,6 +66,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     TwoFactorModule,
     ApiKeyModule,
     CustomDomainModule,
+    AnalyticsModule,
 
     // Feature Modules
     TenantModule,
