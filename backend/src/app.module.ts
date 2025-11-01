@@ -28,6 +28,7 @@ import { CustomDomainModule } from './modules/custom-domain/custom-domain.module
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { ABTestingModule } from './modules/ab-testing/ab-testing.module';
 import { EmailTemplateModule } from './modules/email-template/email-template.module';
+import { EmailAutomationModule } from './modules/email-automation/email-automation.module';
 import { CacheModule } from './common/cache/cache.module';
 import { QueueModule } from './common/queue/queue.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -71,6 +72,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     AnalyticsModule,
     ABTestingModule,
     EmailTemplateModule,
+    EmailAutomationModule,
 
     // Feature Modules
     TenantModule,
