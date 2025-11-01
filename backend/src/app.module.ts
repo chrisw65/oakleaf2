@@ -21,6 +21,9 @@ import { AuditModule } from './modules/audit/audit.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { TwoFactorModule } from './modules/two-factor/two-factor.module';
+import { ApiKeyModule } from './modules/api-key/api-key.module';
 import { CacheModule } from './common/cache/cache.module';
 import { QueueModule } from './common/queue/queue.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -57,6 +60,9 @@ import { RolesGuard } from './common/guards/roles.guard';
     AuditModule,
     FileUploadModule,
     NotificationModule,
+    AdminModule,
+    TwoFactorModule,
+    ApiKeyModule,
 
     // Feature Modules
     TenantModule,
