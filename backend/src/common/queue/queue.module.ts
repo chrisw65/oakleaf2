@@ -5,16 +5,7 @@ import { QueueService } from './queue.service';
 import { EmailQueue } from './processors/email.processor';
 import { DataProcessingQueue } from './processors/data-processing.processor';
 import { WebhookQueue } from './processors/webhook.processor';
-import { NotificationQueue } from './processors/notification.processor';
-
-export enum QueueName {
-  EMAIL = 'email',
-  DATA_PROCESSING = 'data-processing',
-  WEBHOOK = 'webhook',
-  NOTIFICATION = 'notification',
-  ANALYTICS = 'analytics',
-  REPORT = 'report',
-}
+import { QueueName } from './queue.constants';
 
 @Global()
 @Module({
@@ -54,7 +45,6 @@ export enum QueueName {
     EmailQueue,
     DataProcessingQueue,
     WebhookQueue,
-    NotificationQueue,
   ],
   exports: [QueueService, BullModule],
 })

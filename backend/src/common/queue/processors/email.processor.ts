@@ -1,7 +1,7 @@
 import { Process, Processor, OnQueueActive, OnQueueCompleted, OnQueueFailed } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
-import { Job } from 'bull';
-import { QueueName } from '../queue.module';
+import type { Job } from 'bull';
+import { QueueName } from '../queue.constants';
 
 export interface SendEmailJobData {
   to: string | string[];

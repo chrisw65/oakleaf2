@@ -1,20 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
-import { Queue, Job, JobOptions } from 'bull';
-import { QueueName } from './queue.module';
+import type { Queue, Job, JobOptions } from 'bull';
+import { QueueName } from './queue.constants';
 
 export interface JobData {
   [key: string]: any;
-}
-
-export interface QueueJobOptions extends JobOptions {
-  priority?: number;
-  delay?: number;
-  repeat?: {
-    cron?: string;
-    every?: number;
-    limit?: number;
-  };
 }
 
 @Injectable()
@@ -34,7 +24,7 @@ export class QueueService {
   async addEmailJob(
     jobName: string,
     data: JobData,
-    options?: QueueJobOptions,
+    options?: JobOptions,
   ): Promise<Job> {
     return this.emailQueue.add(jobName, data, options);
   }
@@ -45,7 +35,7 @@ export class QueueService {
   async addDataProcessingJob(
     jobName: string,
     data: JobData,
-    options?: QueueJobOptions,
+    options?: JobOptions,
   ): Promise<Job> {
     return this.dataProcessingQueue.add(jobName, data, options);
   }
@@ -56,7 +46,7 @@ export class QueueService {
   async addWebhookJob(
     jobName: string,
     data: JobData,
-    options?: QueueJobOptions,
+    options?: JobOptions,
   ): Promise<Job> {
     return this.webhookQueue.add(jobName, data, options);
   }
@@ -67,7 +57,7 @@ export class QueueService {
   async addNotificationJob(
     jobName: string,
     data: JobData,
-    options?: QueueJobOptions,
+    options?: JobOptions,
   ): Promise<Job> {
     return this.notificationQueue.add(jobName, data, options);
   }
@@ -78,7 +68,7 @@ export class QueueService {
   async addAnalyticsJob(
     jobName: string,
     data: JobData,
-    options?: QueueJobOptions,
+    options?: JobOptions,
   ): Promise<Job> {
     return this.analyticsQueue.add(jobName, data, options);
   }
@@ -89,7 +79,7 @@ export class QueueService {
   async addReportJob(
     jobName: string,
     data: JobData,
-    options?: QueueJobOptions,
+    options?: JobOptions,
   ): Promise<Job> {
     return this.reportQueue.add(jobName, data, options);
   }
@@ -264,7 +254,7 @@ export class QueueService {
    */
   async bulkAddJobs(
     queueName: QueueName,
-    jobs: Array<{ name: string; data: JobData; opts?: QueueJobOptions }>,
+    jobs: Array<{ name: string; data: JobData; opts?: JobOptions }>,
   ): Promise<Job[]> {
     const queue = this.getQueue(queueName);
     return queue.addBulk(jobs);
@@ -316,6 +306,6 @@ export class QueueService {
     return healthChecks.reduce((acc, { name, health }) => {
       acc[name] = health;
       return acc;
-    }, {});
+    }, {} as Record<string, any>);
   }
 }
