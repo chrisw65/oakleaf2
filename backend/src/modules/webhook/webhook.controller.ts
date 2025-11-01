@@ -11,11 +11,13 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { WebhookService, CreateWebhookDto, UpdateWebhookDto } from './webhook.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { GetTenant } from '../auth/get-tenant.decorator';
-import { GetUser } from '../auth/get-user.decorator';
+import type { CreateWebhookDto, UpdateWebhookDto } from './webhook.service';
+import { WebhookService } from './webhook.service';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { GetTenant } from '../../common/decorators/get-tenant.decorator';
+import { GetUser } from '../../common/decorators/get-user.decorator';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { WebhookEvent } from './webhook.entity';
 
 @ApiTags('Webhooks')
 @ApiBearerAuth()
@@ -200,12 +202,10 @@ export class WebhookController {
   @ApiOperation({ summary: 'Get available webhook events' })
   @ApiResponse({ status: 200, description: 'List of available events' })
   async getEvents() {
-    // Import WebhookEvent enum
-    const { WebhookEvent } = await import('./webhook.entity');
     const events = Object.values(WebhookEvent).map((event) => ({
       value: event,
-      label: this.formatEventLabel(event),
-      category: this.getEventCategory(event),
+      label: this.formatEventLabel(event as string),
+      category: this.getEventCategory(event as string),
     }));
 
     return {

@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import type { Cache } from 'cache-manager';
 
 export interface CacheOptions {
   ttl?: number; // Time to live in seconds
@@ -15,7 +15,8 @@ export class CacheService {
    * Get value from cache
    */
   async get<T>(key: string): Promise<T | null> {
-    return await this.cacheManager.get<T>(key);
+    const value = await this.cacheManager.get<T>(key);
+    return value ?? null;
   }
 
   /**
@@ -49,7 +50,13 @@ export class CacheService {
    * Clear all cache
    */
   async reset(): Promise<void> {
-    await this.cacheManager.reset();
+    // Note: reset() method might not be available in all cache managers
+    // Use with caution or implement store-specific clearing
+    if ('reset' in this.cacheManager && typeof (this.cacheManager as any).reset === 'function') {
+      await (this.cacheManager as any).reset();
+    } else {
+      console.warn('Cache reset not supported by current cache manager');
+    }
   }
 
   /**
