@@ -26,18 +26,18 @@ docker compose logs -f
 ```
 
 ### Docker Port Mappings:
-- **PostgreSQL**: `localhost:5434` (avoids 5432)
+- **PostgreSQL**: `localhost:5435` (avoids 5432)
 - **Redis**: `localhost:6380` (avoids 6379)
 - **Backend API**: `localhost:3001`
 - **Frontend**: `localhost:3002` (avoids 3000)
-- **Adminer** (DB Admin): `localhost:8081`
+- **Adminer** (DB Admin): `localhost:8082`
 - **MinIO API**: `localhost:9002`
 - **MinIO Console**: `localhost:9003`
 
 ### Access Points:
 - Frontend: http://localhost:3002
 - Backend API: http://localhost:3001
-- Database Admin: http://localhost:8081
+- Database Admin: http://localhost:8082
 
 See [README-DOCKER.md](./README-DOCKER.md) for full Docker documentation.
 
@@ -60,7 +60,7 @@ If not using Docker, you'll need to change ports to avoid conflicts.
    # Use non-conflicting ports
    PORT=3001
    DB_HOST=localhost
-   DB_PORT=5434  # Or your PostgreSQL port
+   DB_PORT=5435  # Or your PostgreSQL port
    DB_USER=your_user
    DB_PASSWORD=your_password
    DB_NAME=your_database
@@ -202,7 +202,7 @@ For development with no conflicts:
 4. **Access**:
    - Frontend: http://localhost:3002
    - Backend: http://localhost:3001
-   - Database: localhost:5434 (via Docker)
+   - Database: localhost:5435 (via Docker)
    - Redis: localhost:6380 (via Docker)
 
 This gives you hot reload for code changes while using Docker for databases!
