@@ -17,7 +17,7 @@ import { Notification } from './notification.entity';
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
           expiresIn: configService.get<string>('JWT_EXPIRATION', '1d'),
-        },
+        } as any,
       }),
       inject: [ConfigService],
     }),

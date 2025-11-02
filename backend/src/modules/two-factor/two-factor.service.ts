@@ -160,7 +160,7 @@ export class TwoFactorService {
 
     // Disable 2FA
     twoFactor.isEnabled = false;
-    twoFactor.enabledAt = null;
+    twoFactor.enabledAt = undefined;
     await this.twoFactorRepository.save(twoFactor);
 
     // Audit log

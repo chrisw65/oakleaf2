@@ -181,7 +181,7 @@ export class EmailSequenceSubscriber extends TenantBaseEntity {
       const delayMs = this.calculateDelayMs(delay.value, delay.unit);
       this.nextSendAt = new Date(Date.now() + delayMs);
     } else {
-      this.nextSendAt = null;
+      this.nextSendAt = undefined;
     }
   }
 
@@ -218,7 +218,7 @@ export class EmailSequenceSubscriber extends TenantBaseEntity {
    * Calculate delay in milliseconds
    */
   private calculateDelayMs(value: number, unit: string): number {
-    const multipliers = {
+    const multipliers: Record<string, number> = {
       minutes: 60 * 1000,
       hours: 60 * 60 * 1000,
       days: 24 * 60 * 60 * 1000,

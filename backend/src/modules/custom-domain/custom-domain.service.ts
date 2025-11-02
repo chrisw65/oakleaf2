@@ -148,7 +148,7 @@ export class CustomDomainService {
       if (verificationResult.verified) {
         customDomain.status = DomainStatus.VERIFIED;
         customDomain.verifiedAt = new Date();
-        customDomain.errorMessage = null;
+        customDomain.errorMessage = undefined;
 
         this.logger.log(`Domain verified: ${customDomain.domain}`);
 
@@ -482,7 +482,7 @@ export class CustomDomainService {
       results.status = DomainStatus.FAILED;
     }
 
-    return results;
+    return results as any;
   }
 
   /**

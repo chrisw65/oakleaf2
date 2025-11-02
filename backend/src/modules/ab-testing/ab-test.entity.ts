@@ -192,8 +192,9 @@ export class ABTest extends TenantBaseEntity {
 
     // Check if minimum sample size reached and winner detected
     if (this.minSampleSize && this.results) {
+      const minSize = this.minSampleSize;
       const allVariantsHaveMinSample = this.results.every(
-        (r) => r.participants >= this.minSampleSize,
+        (r) => r.participants >= minSize,
       );
       if (allVariantsHaveMinSample && this.hasStatisticalSignificance()) {
         return true;

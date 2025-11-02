@@ -402,13 +402,13 @@ export class ABTestingService {
     if (control) {
       for (const result of results) {
         if (!result.isControl) {
-          result.confidence = this.calculateConfidence(
+          (result as any).confidence = this.calculateConfidence(
             control.participants,
             control.conversions,
             result.participants,
             result.conversions,
           );
-          result.improvement = control.conversionRate > 0
+          (result as any).improvement = control.conversionRate > 0
             ? ((result.conversionRate - control.conversionRate) / control.conversionRate) * 100
             : 0;
         }

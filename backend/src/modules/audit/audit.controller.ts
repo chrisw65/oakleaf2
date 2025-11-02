@@ -1,7 +1,7 @@
 import { Controller, Get, Query, Param, UseGuards, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuditService, AuditLogFilter } from './audit.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { GetTenant } from '../auth/get-tenant.decorator';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { GetTenant } from '../../common/decorators/get-tenant.decorator';
 import { RequirePermissions } from '../rbac/decorators/permissions.decorator';
 import { PermissionsGuard } from '../rbac/guards/permissions.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';

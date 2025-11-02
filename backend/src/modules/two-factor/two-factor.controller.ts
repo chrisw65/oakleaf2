@@ -8,10 +8,11 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { TwoFactorService, Setup2FADto, Enable2FADto } from './two-factor.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { GetTenant } from '../auth/get-tenant.decorator';
-import { GetUser } from '../auth/get-user.decorator';
+import { TwoFactorService } from './two-factor.service';
+import type { Setup2FADto, Enable2FADto } from './two-factor.service';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { GetTenant } from '../../common/decorators/get-tenant.decorator';
+import { GetUser } from '../../common/decorators/get-user.decorator';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('Two-Factor Authentication')

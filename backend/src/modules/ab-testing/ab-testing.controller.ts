@@ -9,18 +9,18 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ABTestingService,
+import { ABTestingService } from './ab-testing.service';
+import type {
   CreateABTestDto,
   UpdateABTestDto,
   AssignVariantDto,
   TrackConversionDto,
 } from './ab-testing.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { GetTenant } from '../auth/get-tenant.decorator';
-import { GetUser } from '../auth/get-user.decorator';
-import { Permissions } from '../rbac/permissions.decorator';
-import { PermissionsGuard } from '../rbac/permissions.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { GetTenant } from '../../common/decorators/get-tenant.decorator';
+import { GetUser } from '../../common/decorators/get-user.decorator';
+import { Permissions } from '../rbac/decorators/permissions.decorator';
+import { PermissionsGuard } from '../rbac/guards/permissions.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { TestStatus, WinnerSelectionMethod } from './ab-test.entity';
 

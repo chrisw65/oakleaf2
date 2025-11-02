@@ -100,13 +100,13 @@ export class AdminService {
   private readonly startTime = Date.now();
 
   constructor(
-    @InjectRepository('Tenant', { optional: true })
+    @InjectRepository('Tenant' as any)
     private readonly tenantRepository: Repository<any>,
-    @InjectRepository('User', { optional: true })
+    @InjectRepository('User' as any)
     private readonly userRepository: Repository<any>,
-    @InjectRepository('Order', { optional: true })
+    @InjectRepository('Order' as any)
     private readonly orderRepository: Repository<any>,
-    @InjectRepository('Subscription', { optional: true })
+    @InjectRepository('Subscription' as any)
     private readonly subscriptionRepository: Repository<any>,
     private readonly cacheService: CacheService,
     private readonly queueService: QueueService,
