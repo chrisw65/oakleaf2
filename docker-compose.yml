@@ -84,13 +84,15 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev  # Use dev Dockerfile for hot-reload
     container_name: funnel-frontend
     environment:
       NODE_ENV: development
       PORT: 3000
       REACT_APP_API_URL: http://localhost:3001/api
       REACT_APP_WS_URL: ws://localhost:3001
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
     ports:
       - "3002:3000"  # External:Internal - Maps host 3002 to container 3000
     volumes:
@@ -100,7 +102,8 @@ services:
       - backend
     networks:
       - funnel-network
-    command: npm start
+    stdin_open: true
+    tty: true
 
   # Adminer (Database Management) - Using port 8081 to be safe
   adminer:
