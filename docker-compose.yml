@@ -84,12 +84,13 @@ services:
       PORT: 3000
       REACT_APP_API_URL: http://localhost:3001/api
       REACT_APP_WS_URL: ws://localhost:3001
+      WATCHPACK_POLLING: "true"
     ports:
       - "3002:3000"  # External:Internal - Maps host 3002 to container 3000
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    command: sh -c "npm install && npm start"
+    command: sh -c "rm -rf node_modules && npm ci && npm start"
     depends_on:
       - backend
     networks:
