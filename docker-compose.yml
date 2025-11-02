@@ -86,6 +86,10 @@ services:
       REACT_APP_WS_URL: ws://localhost:3001
     ports:
       - "3002:3000"  # External:Internal - Maps host 3002 to container 3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm start"
     depends_on:
       - backend
     networks:
