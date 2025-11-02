@@ -47,7 +47,17 @@ class AuthService {
   }
 
   async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await apiService.post<AuthResponse>('/auth/register', data);
+    // Strip out confirmPassword and any other non-whitelisted fields
+    const { email, password, firstName, lastName, phone } = data as any;
+    const cleanData: RegisterData = {
+      email,
+      password,
+      firstName,
+      lastName,
+      ...(phone && { phone }),
+    };
+
+    const response = await apiService.post<AuthResponse>('/auth/register', cleanData);
 
     // Store tokens and user in localStorage
     localStorage.setItem('accessToken', response.accessToken);
