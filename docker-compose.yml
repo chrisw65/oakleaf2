@@ -42,10 +42,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      target: builder  # Use builder stage for development
     container_name: funnel-backend
     environment:
-      NODE_ENV: ${NODE_ENV:-development}
+      NODE_ENV: ${NODE_ENV:-production}
       PORT: 3001
       # Database connection (uses internal container hostname)
       DB_HOST: postgres
@@ -65,10 +64,6 @@ services:
       REFRESH_TOKEN_EXPIRES_IN: ${REFRESH_TOKEN_EXPIRES_IN:-7d}
     ports:
       - "3001:3001"
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-      - /app/dist
     depends_on:
       postgres:
         condition: service_healthy
@@ -76,30 +71,26 @@ services:
         condition: service_healthy
     networks:
       - funnel-network
-    command: npm run start:dev
+    restart: unless-stopped
 
   # Frontend Application - Using port 3002 to avoid conflicts
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev  # Use dev Dockerfile for hot-reload
+      dockerfile: Dockerfile.dev
     container_name: funnel-frontend
     environment:
       NODE_ENV: development
       PORT: 3000
       REACT_APP_API_URL: http://localhost:3001/api
       REACT_APP_WS_URL: ws://localhost:3001
-      WATCHPACK_POLLING: "true"
-      CHOKIDAR_USEPOLLING: "true"
     ports:
       - "3002:3000"  # External:Internal - Maps host 3002 to container 3000
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     depends_on:
       - backend
     networks:
       - funnel-network
+    restart: unless-stopped
     stdin_open: true
     tty: true
 
