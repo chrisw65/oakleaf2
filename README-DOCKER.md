@@ -10,9 +10,9 @@ To avoid conflicts with existing services, the following ports are used:
 |---------|-----------|----------------|---------|
 | Backend API | 3001 | 3001 | NestJS backend |
 | Frontend | 3002 | 3000 | React frontend |
-| PostgreSQL | 5434 | 5432 | Database |
+| PostgreSQL | 5435 | 5432 | Database |
 | Redis | 6380 | 6379 | Cache & queues |
-| Adminer | 8081 | 8080 | Database admin |
+| Adminer | 8082 | 8080 | Database admin |
 | MinIO API | 9002 | 9000 | Object storage |
 | MinIO Console | 9003 | 9001 | MinIO admin |
 
@@ -54,7 +54,7 @@ Once running, access the services at:
 
 - **Backend API**: http://localhost:3001
 - **Frontend**: http://localhost:3002
-- **Adminer** (DB Admin): http://localhost:8081
+- **Adminer** (DB Admin): http://localhost:8082
   - System: PostgreSQL
   - Server: postgres
   - Username: funnel_user
@@ -122,7 +122,7 @@ docker-compose restart backend
 ## Database Management
 
 ### Using Adminer
-1. Open http://localhost:8081
+1. Open http://localhost:8082
 2. Login with credentials from .env file
 3. Manage database through web interface
 

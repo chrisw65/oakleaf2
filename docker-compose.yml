@@ -103,12 +103,12 @@ services:
     stdin_open: true
     tty: true
 
-  # Adminer (Database Management) - Using port 8081 to be safe
+  # Adminer (Database Management) - Using port 8082 to avoid conflicts
   adminer:
     image: adminer:latest
     container_name: funnel-adminer
     ports:
-      - "8081:8080"  # External:Internal - Maps host 8081 to container 8080
+      - "8082:8080"  # External:Internal - Maps host 8082 to container 8080
     depends_on:
       - postgres
     networks:
