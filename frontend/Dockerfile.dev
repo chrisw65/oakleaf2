@@ -6,14 +6,11 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --prefer-offline --no-audit
-
-# Copy source code
-COPY . .
+# Note: Dependencies are installed via docker-compose command
+# to work properly with volume mounts
 
 # Expose port
 EXPOSE 3000
 
-# Start development server
+# Start development server (overridden by docker-compose)
 CMD ["npm", "start"]
