@@ -11,9 +11,9 @@ import {
 } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { NotificationGateway } from './notification.gateway';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { GetTenant } from '../auth/get-tenant.decorator';
-import { GetUser } from '../auth/get-user.decorator';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { GetTenant } from '../../common/decorators/get-tenant.decorator';
+import { GetUser } from '../../common/decorators/get-user.decorator';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('Notifications')

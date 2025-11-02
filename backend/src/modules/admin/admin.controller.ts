@@ -1,6 +1,6 @@
 import { Controller, Get, Query, Param, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RequirePermissions } from '../rbac/decorators/permissions.decorator';
 import { PermissionsGuard } from '../rbac/guards/permissions.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';

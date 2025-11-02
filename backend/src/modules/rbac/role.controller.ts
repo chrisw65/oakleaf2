@@ -10,10 +10,11 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { RoleService, CreateRoleDto, UpdateRoleDto, AssignPermissionsDto } from './role.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { GetTenant } from '../auth/get-tenant.decorator';
-import { GetUser } from '../auth/get-user.decorator';
+import { RoleService } from './role.service';
+import type { CreateRoleDto, UpdateRoleDto, AssignPermissionsDto } from './role.service';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { GetTenant } from '../../common/decorators/get-tenant.decorator';
+import { GetUser } from '../../common/decorators/get-user.decorator';
 import { RequirePermissions } from './decorators/permissions.decorator';
 import { PermissionsGuard } from './guards/permissions.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';

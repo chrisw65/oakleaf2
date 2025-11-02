@@ -9,17 +9,17 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  EmailTemplateService,
+import { EmailTemplateService } from './email-template.service';
+import type {
   CreateEmailTemplateDto,
   UpdateEmailTemplateDto,
   RenderTemplateDto,
 } from './email-template.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { GetTenant } from '../auth/get-tenant.decorator';
-import { GetUser } from '../auth/get-user.decorator';
-import { Permissions } from '../rbac/permissions.decorator';
-import { PermissionsGuard } from '../rbac/permissions.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { GetTenant } from '../../common/decorators/get-tenant.decorator';
+import { GetUser } from '../../common/decorators/get-user.decorator';
+import { Permissions } from '../rbac/decorators/permissions.decorator';
+import { PermissionsGuard } from '../rbac/guards/permissions.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { TemplateCategory, TemplateStatus } from './email-template.entity';
 

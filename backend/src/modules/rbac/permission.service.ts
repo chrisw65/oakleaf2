@@ -202,7 +202,7 @@ export class PermissionService {
    */
   async getCategories(tenantId: string): Promise<string[]> {
     const permissions = await this.findAll(tenantId);
-    const categories = new Set(permissions.map((p) => p.category).filter(Boolean));
+    const categories = new Set(permissions.map((p) => p.category).filter((c): c is string => Boolean(c)));
     return Array.from(categories).sort();
   }
 

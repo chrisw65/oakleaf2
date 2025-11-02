@@ -52,7 +52,7 @@ export class StripeService {
     }
 
     this.stripe = new Stripe(apiKey, {
-      apiVersion: '2024-10-28.acacia',
+      apiVersion: '2024-10-28.acacia' as any,
     });
   }
 
@@ -242,7 +242,7 @@ export class StripeService {
       }
 
       if (dto.couponCode) {
-        createParams.coupon = dto.couponCode;
+        (createParams as any).coupon = dto.couponCode;
       }
 
       const stripeSubscription = await this.stripe.subscriptions.create(createParams);
@@ -273,8 +273,8 @@ export class StripeService {
         trialEnd: stripeSubscription.trial_end
           ? new Date(stripeSubscription.trial_end * 1000)
           : undefined,
-        currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+        currentPeriodStart: new Date((stripeSubscription as any).current_period_start * 1000),
+        currentPeriodEnd: new Date((stripeSubscription as any).current_period_end * 1000),
         metadata: dto.metadata,
         couponCode: dto.couponCode,
       });
@@ -483,10 +483,10 @@ export class StripeService {
     if (subscription) {
       subscription.status = this.mapSubscriptionStatus(stripeSubscription.status);
       subscription.currentPeriodStart = new Date(
-        stripeSubscription.current_period_start * 1000,
+        (stripeSubscription as any).current_period_start * 1000,
       );
       subscription.currentPeriodEnd = new Date(
-        stripeSubscription.current_period_end * 1000,
+        (stripeSubscription as any).current_period_end * 1000,
       );
 
       await this.subscriptionRepository.save(subscription);

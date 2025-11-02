@@ -56,7 +56,7 @@ export class TwoFactorAuth extends TenantBaseEntity {
    * Unlock 2FA
    */
   unlock(): void {
-    this.lockedUntil = null;
+    this.lockedUntil = undefined;
     this.failedAttempts = 0;
   }
 
@@ -77,14 +77,14 @@ export class TwoFactorAuth extends TenantBaseEntity {
    */
   resetFailedAttempts(): void {
     this.failedAttempts = 0;
-    this.lockedUntil = null;
+    this.lockedUntil = undefined;
   }
 
   /**
    * Check if backup codes available
    */
   hasBackupCodes(): boolean {
-    return (
+    return !!(
       this.backupCodes &&
       this.backupCodes.length > 0 &&
       this.backupCodesUsed < this.backupCodes.length

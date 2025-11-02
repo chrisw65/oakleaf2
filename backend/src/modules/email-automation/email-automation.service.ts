@@ -90,7 +90,7 @@ export class EmailAutomationService {
       activeSubscribers: 0,
       completedSubscribers: 0,
       totalEmailsSent: 0,
-    });
+    } as any) as unknown as EmailSequence;
 
     await this.sequenceRepository.save(sequence);
 

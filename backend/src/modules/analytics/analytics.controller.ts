@@ -8,11 +8,12 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
 } from '@nestjs/common';
-import { AnalyticsService, TrackEventDto } from './analytics.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { GetTenant } from '../auth/get-tenant.decorator';
-import { Permissions } from '../rbac/permissions.decorator';
-import { PermissionsGuard } from '../rbac/permissions.guard';
+import { AnalyticsService } from './analytics.service';
+import type { TrackEventDto } from './analytics.service';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { GetTenant } from '../../common/decorators/get-tenant.decorator';
+import { Permissions } from '../rbac/decorators/permissions.decorator';
+import { PermissionsGuard } from '../rbac/guards/permissions.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('Analytics')

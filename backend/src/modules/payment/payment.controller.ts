@@ -9,13 +9,14 @@ import {
   HttpCode,
   HttpStatus,
   Headers,
-  RawBodyRequest,
 } from '@nestjs/common';
+import type { RawBodyRequest } from '@nestjs/common';
 import { Request } from 'express';
-import { StripeService, CreatePaymentIntentDto, CreateSubscriptionDto } from './stripe.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { GetTenant } from '../auth/get-tenant.decorator';
-import { GetUser } from '../auth/get-user.decorator';
+import { StripeService } from './stripe.service';
+import type { CreatePaymentIntentDto, CreateSubscriptionDto } from './stripe.service';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { GetTenant } from '../../common/decorators/get-tenant.decorator';
+import { GetUser } from '../../common/decorators/get-user.decorator';
 import { RequirePermissions } from '../rbac/decorators/permissions.decorator';
 import { PermissionsGuard } from '../rbac/guards/permissions.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';

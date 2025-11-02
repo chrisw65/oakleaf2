@@ -11,13 +11,13 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import {
-  PermissionService,
+import { PermissionService } from './permission.service';
+import type {
   CreatePermissionDto,
   UpdatePermissionDto,
 } from './permission.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { GetTenant } from '../auth/get-tenant.decorator';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { GetTenant } from '../../common/decorators/get-tenant.decorator';
 import { RequirePermissions } from './decorators/permissions.decorator';
 import { PermissionsGuard } from './guards/permissions.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';

@@ -82,7 +82,7 @@ export class EmailTemplateService {
       status: TemplateStatus.DRAFT,
       createdBy: userId,
       usageCount: 0,
-    });
+    } as any) as unknown as EmailTemplate;
 
     // Validate content
     const validation = template.validateContent();

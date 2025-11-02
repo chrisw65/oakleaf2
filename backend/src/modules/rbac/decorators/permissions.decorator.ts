@@ -46,3 +46,4 @@ export const RequireAnyPermission = (...permissions: string[]) =>
 export const RESOURCE_PERMISSION_KEY = 'resource_permission';
 export const RequireResourcePermission = (resource: string, action: string) =>
   SetMetadata(RESOURCE_PERMISSION_KEY, { resource, action });
+export const Permissions = RequirePermissions;
