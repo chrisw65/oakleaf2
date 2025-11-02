@@ -16,6 +16,19 @@ import { CrmModule } from './modules/crm/crm.module';
 import { OrderModule } from './modules/order/order.module';
 import { EmailModule } from './modules/email/email.module';
 import { WebhookModule } from './modules/webhook/webhook.module';
+import { RbacModule } from './modules/rbac/rbac.module';
+import { AuditModule } from './modules/audit/audit.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { FileUploadModule } from './modules/file-upload/file-upload.module';
+import { NotificationModule } from './modules/notification/notification.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { TwoFactorModule } from './modules/two-factor/two-factor.module';
+import { ApiKeyModule } from './modules/api-key/api-key.module';
+import { CustomDomainModule } from './modules/custom-domain/custom-domain.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { ABTestingModule } from './modules/ab-testing/ab-testing.module';
+import { EmailTemplateModule } from './modules/email-template/email-template.module';
+import { EmailAutomationModule } from './modules/email-automation/email-automation.module';
 import { CacheModule } from './common/cache/cache.module';
 import { QueueModule } from './common/queue/queue.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -48,6 +61,18 @@ import { RolesGuard } from './common/guards/roles.guard';
     // Infrastructure Modules
     CacheModule,
     QueueModule,
+    RbacModule,
+    AuditModule,
+    FileUploadModule,
+    NotificationModule,
+    AdminModule,
+    TwoFactorModule,
+    ApiKeyModule,
+    CustomDomainModule,
+    AnalyticsModule,
+    ABTestingModule,
+    EmailTemplateModule,
+    EmailAutomationModule,
 
     // Feature Modules
     TenantModule,
@@ -59,6 +84,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     OrderModule,
     EmailModule,
     WebhookModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [
