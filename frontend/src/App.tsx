@@ -10,6 +10,9 @@ import DashboardPage from './pages/dashboard/DashboardPage';
 import ContactsPage from './pages/crm/ContactsPage';
 import OpportunitiesPage from './pages/crm/OpportunitiesPage';
 import PipelinesPage from './pages/crm/PipelinesPage';
+import CampaignsPage from './pages/email/CampaignsPage';
+import TemplatesPage from './pages/email/TemplatesPage';
+import SegmentsPage from './pages/email/SegmentsPage';
 import ComingSoon from './components/common/ComingSoon';
 
 const App: React.FC = () => {
@@ -50,10 +53,10 @@ const App: React.FC = () => {
               <Route path="orders" element={<ComingSoon title="Orders" description="View and manage orders" />} />
 
               {/* Email Marketing Routes */}
-              <Route path="email/campaigns" element={<ComingSoon title="Email Campaigns" description="Create and manage email campaigns" />} />
-              <Route path="email/templates" element={<ComingSoon title="Email Templates" description="Manage your email templates" />} />
+              <Route path="email/campaigns" element={<CampaignsPage />} />
+              <Route path="email/templates" element={<TemplatesPage />} />
               <Route path="email/sequences" element={<ComingSoon title="Email Sequences" description="Create automated email sequences" />} />
-              <Route path="email/segments" element={<ComingSoon title="Segments" description="Manage contact segments" />} />
+              <Route path="email/segments" element={<SegmentsPage />} />
 
               {/* Funnel Routes */}
               <Route path="funnels" element={<ComingSoon title="Funnels" description="Build and manage your sales funnels" />} />
