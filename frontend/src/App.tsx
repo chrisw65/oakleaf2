@@ -13,6 +13,8 @@ import PipelinesPage from './pages/crm/PipelinesPage';
 import CampaignsPage from './pages/email/CampaignsPage';
 import TemplatesPage from './pages/email/TemplatesPage';
 import SegmentsPage from './pages/email/SegmentsPage';
+import ProductsPage from './pages/ecommerce/ProductsPage';
+import OrdersPage from './pages/ecommerce/OrdersPage';
 import ComingSoon from './components/common/ComingSoon';
 
 const App: React.FC = () => {
@@ -49,8 +51,8 @@ const App: React.FC = () => {
               <Route path="pipelines" element={<PipelinesPage />} />
 
               {/* Product Routes */}
-              <Route path="products" element={<ComingSoon title="Products" description="Manage your product catalog" />} />
-              <Route path="orders" element={<ComingSoon title="Orders" description="View and manage orders" />} />
+              <Route path="products" element={<ProductsPage />} />
+              <Route path="orders" element={<OrdersPage />} />
 
               {/* Email Marketing Routes */}
               <Route path="email/campaigns" element={<CampaignsPage />} />
