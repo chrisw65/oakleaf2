@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Select, Button, Space, message, Typography, Spin, Empty } from 'antd';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { Opportunity, Pipeline, PipelineStage, crmService } from '../../services/crmService';
+import { Opportunity, Pipeline, crmService } from '../../services/crmService';
 import OpportunityCard from '../../components/crm/OpportunityCard';
 import OpportunityFormModal from '../../components/crm/OpportunityFormModal';
 
@@ -25,6 +25,7 @@ const OpportunitiesPage: React.FC = () => {
     if (selectedPipeline) {
       fetchOpportunities();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPipeline]);
 
   const fetchPipelines = async () => {
