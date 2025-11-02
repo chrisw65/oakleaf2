@@ -289,13 +289,13 @@ const FunnelsPage: React.FC = () => {
     },
   ];
 
-  const filteredFunnels = funnels;
+  const filteredFunnels = funnels || [];
 
   // Calculate overview stats
-  const totalViews = funnels.reduce((sum, f) => sum + (f.totalViews || 0), 0);
-  const totalConversions = funnels.reduce((sum, f) => sum + (f.totalConversions || 0), 0);
-  const totalRevenue = funnels.reduce((sum, f) => sum + (f.totalRevenue || 0), 0);
-  const avgConversionRate = funnels.length > 0
+  const totalViews = (funnels || []).reduce((sum, f) => sum + (f.totalViews || 0), 0);
+  const totalConversions = (funnels || []).reduce((sum, f) => sum + (f.totalConversions || 0), 0);
+  const totalRevenue = (funnels || []).reduce((sum, f) => sum + (f.totalRevenue || 0), 0);
+  const avgConversionRate = funnels && funnels.length > 0
     ? funnels.reduce((sum, f) => sum + (f.conversionRate || 0), 0) / funnels.length
     : 0;
 
@@ -304,7 +304,7 @@ const FunnelsPage: React.FC = () => {
       <Card style={{ marginBottom: 16 }}>
         <Row gutter={16}>
           <Col span={6}>
-            <Statistic title="Total Funnels" value={funnels.length} />
+            <Statistic title="Total Funnels" value={(funnels || []).length} />
           </Col>
           <Col span={6}>
             <Statistic title="Total Views" value={totalViews} />
