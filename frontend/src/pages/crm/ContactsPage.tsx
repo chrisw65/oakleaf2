@@ -44,6 +44,7 @@ const ContactsPage: React.FC = () => {
 
   useEffect(() => {
     fetchContacts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, statusFilter, pagination.current, pagination.pageSize]);
 
   const fetchContacts = async () => {

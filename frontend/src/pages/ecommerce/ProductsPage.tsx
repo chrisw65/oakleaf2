@@ -20,7 +20,6 @@ import {
   DeleteOutlined,
   MoreOutlined,
   SearchOutlined,
-  StarOutlined,
   StarFilled,
   DollarOutlined,
 } from '@ant-design/icons';
@@ -43,6 +42,7 @@ const ProductsPage: React.FC = () => {
 
   useEffect(() => {
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.current, pagination.pageSize, searchText]);
 
   const fetchProducts = async () => {

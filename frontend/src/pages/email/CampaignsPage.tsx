@@ -9,7 +9,6 @@ import {
   Modal,
   message,
   Typography,
-  Progress,
   Statistic,
   Row,
   Col,
@@ -22,7 +21,6 @@ import {
   DeleteOutlined,
   MoreOutlined,
   MailOutlined,
-  EyeOutlined,
   ClockCircleOutlined,
   PauseCircleOutlined,
 } from '@ant-design/icons';
@@ -45,6 +43,7 @@ const CampaignsPage: React.FC = () => {
 
   useEffect(() => {
     fetchCampaigns();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.current, pagination.pageSize]);
 
   const fetchCampaigns = async () => {
