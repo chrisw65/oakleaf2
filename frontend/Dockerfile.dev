@@ -3,11 +3,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
-# Note: Dependencies are installed via docker-compose command
-# to work properly with volume mounts
+# Install dependencies will be done via volume mount and docker-compose command
+# This ensures compatibility with volume-mounted source code
 
 # Expose port
 EXPOSE 3000
