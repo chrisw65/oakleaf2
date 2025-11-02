@@ -89,8 +89,8 @@ services:
       - "3002:3000"  # External:Internal - Maps host 3002 to container 3000
     volumes:
       - ./frontend:/app
-      - /app/node_modules
-    command: sh -c "rm -rf node_modules && npm ci && npm start"
+      - frontend-node-modules:/app/node_modules
+    command: sh -c "npm ci && npm start"
     depends_on:
       - backend
     networks:
@@ -137,6 +137,7 @@ volumes:
   postgres-data:
   redis-data:
   minio-data:
+  frontend-node-modules:
 
 networks:
   funnel-network:
