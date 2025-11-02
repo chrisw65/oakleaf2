@@ -34,7 +34,8 @@ export interface CreateSubscriptionDto {
 @Injectable()
 export class StripeService {
   private readonly logger = new Logger(StripeService.name);
-  private readonly stripe: Stripe;
+  private readonly stripe: Stripe | null = null;
+  private readonly isConfigured: boolean;
 
   constructor(
     private readonly configService: ConfigService,
@@ -47,13 +48,29 @@ export class StripeService {
     private readonly auditService: AuditService,
   ) {
     const apiKey = this.configService.get<string>('STRIPE_SECRET_KEY');
-    if (!apiKey) {
-      throw new Error('STRIPE_SECRET_KEY is not configured');
-    }
 
-    this.stripe = new Stripe(apiKey, {
-      apiVersion: '2024-10-28.acacia' as any,
-    });
+    if (!apiKey) {
+      this.logger.warn(
+        'STRIPE_SECRET_KEY is not configured. Stripe payment functionality will be disabled.'
+      );
+      this.isConfigured = false;
+    } else {
+      this.isConfigured = true;
+      this.stripe = new Stripe(apiKey, {
+        apiVersion: '2024-10-28.acacia' as any,
+      });
+    }
+  }
+
+  /**
+   * Check if Stripe is configured and throw error if not
+   */
+  private ensureConfigured(): void {
+    if (!this.isConfigured || !this.stripe) {
+      throw new BadRequestException(
+        'Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.'
+      );
+    }
   }
 
   /**
@@ -64,9 +81,11 @@ export class StripeService {
     userId: string,
     dto: CreatePaymentIntentDto,
   ): Promise<{ payment: Payment; clientSecret: string }> {
+    this.ensureConfigured();
+
     try {
       // Create Stripe payment intent
-      const paymentIntent = await this.stripe.paymentIntents.create({
+      const paymentIntent = await this.stripe!.paymentIntents.create({
         amount: Math.round(dto.amount * 100), // Convert to cents
         currency: dto.currency || 'usd',
         customer: dto.customerId,
@@ -128,6 +147,8 @@ export class StripeService {
     tenantId: string,
     paymentIntentId: string,
   ): Promise<Payment> {
+    this.ensureConfigured();
+
     const payment = await this.paymentRepository.findOne({
       where: { tenantId, stripePaymentIntentId: paymentIntentId },
     });
@@ -137,7 +158,7 @@ export class StripeService {
     }
 
     try {
-      const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
+      const paymentIntent = await this.stripe!.paymentIntents.retrieve(paymentIntentId);
 
       payment.status = this.mapStripeStatus(paymentIntent.status);
       payment.stripeChargeId = paymentIntent.latest_charge as string;
@@ -168,6 +189,8 @@ export class StripeService {
     amount?: number,
     reason?: string,
   ): Promise<Payment> {
+    this.ensureConfigured();
+
     const payment = await this.paymentRepository.findOne({
       where: { tenantId, id: paymentId },
     });
@@ -183,7 +206,7 @@ export class StripeService {
     try {
       const refundAmount = amount || payment.getRefundableAmount();
 
-      const refund = await this.stripe.refunds.create({
+      const refund = await this.stripe!.refunds.create({
         payment_intent: payment.stripePaymentIntentId,
         amount: Math.round(refundAmount * 100),
         reason: reason as any,
@@ -227,6 +250,8 @@ export class StripeService {
     userId: string,
     dto: CreateSubscriptionDto,
   ): Promise<Subscription> {
+    this.ensureConfigured();
+
     try {
       const createParams: Stripe.SubscriptionCreateParams = {
         customer: dto.customerId,
@@ -245,10 +270,10 @@ export class StripeService {
         (createParams as any).coupon = dto.couponCode;
       }
 
-      const stripeSubscription = await this.stripe.subscriptions.create(createParams);
+      const stripeSubscription = await this.stripe!.subscriptions.create(createParams);
 
       // Get price details
-      const price = await this.stripe.prices.retrieve(dto.priceId);
+      const price = await this.stripe!.prices.retrieve(dto.priceId);
 
       const subscription = this.subscriptionRepository.create({
         tenantId,
@@ -307,6 +332,8 @@ export class StripeService {
     subscriptionId: string,
     cancelAtPeriodEnd = true,
   ): Promise<Subscription> {
+    this.ensureConfigured();
+
     const subscription = await this.subscriptionRepository.findOne({
       where: { tenantId, id: subscriptionId },
     });
@@ -316,7 +343,7 @@ export class StripeService {
     }
 
     try {
-      const stripeSubscription = await this.stripe.subscriptions.update(
+      const stripeSubscription = await this.stripe!.subscriptions.update(
         subscription.stripeSubscriptionId,
         {
           cancel_at_period_end: cancelAtPeriodEnd,
@@ -358,14 +385,16 @@ export class StripeService {
    * Handle Stripe webhook
    */
   async handleWebhook(signature: string, payload: Buffer): Promise<void> {
+    this.ensureConfigured();
+
     const webhookSecret = this.configService.get<string>('STRIPE_WEBHOOK_SECRET');
 
     if (!webhookSecret) {
-      throw new Error('STRIPE_WEBHOOK_SECRET is not configured');
+      throw new BadRequestException('STRIPE_WEBHOOK_SECRET is not configured');
     }
 
     try {
-      const event = this.stripe.webhooks.constructEvent(
+      const event = this.stripe!.webhooks.constructEvent(
         payload,
         signature,
         webhookSecret,
