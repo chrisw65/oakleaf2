@@ -7,6 +7,9 @@ import MainLayout from './components/layout/MainLayout';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
+import ContactsPage from './pages/crm/ContactsPage';
+import OpportunitiesPage from './pages/crm/OpportunitiesPage';
+import PipelinesPage from './pages/crm/PipelinesPage';
 import ComingSoon from './components/common/ComingSoon';
 
 const App: React.FC = () => {
@@ -38,9 +41,9 @@ const App: React.FC = () => {
               <Route path="dashboard" element={<DashboardPage />} />
 
               {/* CRM Routes */}
-              <Route path="contacts" element={<ComingSoon title="Contacts" description="Manage your contacts and leads" />} />
-              <Route path="opportunities" element={<ComingSoon title="Opportunities" description="Track your sales opportunities" />} />
-              <Route path="pipelines" element={<ComingSoon title="Pipelines" description="Manage your sales pipelines" />} />
+              <Route path="contacts" element={<ContactsPage />} />
+              <Route path="opportunities" element={<OpportunitiesPage />} />
+              <Route path="pipelines" element={<PipelinesPage />} />
 
               {/* Product Routes */}
               <Route path="products" element={<ComingSoon title="Products" description="Manage your product catalog" />} />
