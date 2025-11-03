@@ -96,6 +96,7 @@ export enum OpportunityStatus {
   OPEN = 'open',
   WON = 'won',
   LOST = 'lost',
+  ABANDONED = 'abandoned',
 }
 
 export interface CreateOpportunityDto {
