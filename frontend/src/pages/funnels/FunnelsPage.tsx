@@ -30,12 +30,14 @@ import {
   ThunderboltOutlined,
   ApiOutlined,
   AppstoreAddOutlined,
+  RobotOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { Funnel, FunnelStatus, funnelService } from '../../services/funnelService';
 import FunnelFormModal from '../../components/funnels/FunnelFormModal';
 import FunnelTemplateLibrary from '../../components/funnels/FunnelTemplateLibrary';
 import IntegrationHub from '../../components/funnels/IntegrationHub';
+import AIFunnelCoach from '../../components/funnels/AIFunnelCoach';
 
 const { Title, Text } = Typography;
 
@@ -48,6 +50,7 @@ const FunnelsPage: React.FC = () => {
   const [editingFunnel, setEditingFunnel] = useState<Funnel | null>(null);
   const [isTemplateLibraryVisible, setIsTemplateLibraryVisible] = useState(false);
   const [isIntegrationHubVisible, setIsIntegrationHubVisible] = useState(false);
+  const [isAICoachVisible, setIsAICoachVisible] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -361,6 +364,16 @@ const FunnelsPage: React.FC = () => {
                   Integrations
                 </Button>
               </Tooltip>
+              <Tooltip title="Get expert funnel advice from AI coach">
+                <Button
+                  icon={<RobotOutlined />}
+                  onClick={() => setIsAICoachVisible(true)}
+                  size="large"
+                  style={{ borderColor: '#6366f1', color: '#6366f1' }}
+                >
+                  AI Coach
+                </Button>
+              </Tooltip>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
@@ -424,6 +437,13 @@ const FunnelsPage: React.FC = () => {
       <IntegrationHub
         visible={isIntegrationHubVisible}
         onCancel={() => setIsIntegrationHubVisible(false)}
+      />
+
+      <AIFunnelCoach
+        visible={isAICoachVisible}
+        onClose={() => setIsAICoachVisible(false)}
+        funnelType="general"
+        funnelData={funnels}
       />
     </div>
   );
