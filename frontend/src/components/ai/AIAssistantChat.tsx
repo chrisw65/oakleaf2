@@ -28,6 +28,7 @@ import {
   BarChartOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
+import aiService from '../../services/aiService';
 
 const { Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -79,105 +80,40 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ visible, onClose }) =
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  // NLP-powered response generation (simulated)
+  // Real AI-powered response generation using backend API
   const generateAIResponse = async (userMessage: string): Promise<Partial<Message>> => {
-    const lowerMessage = userMessage.toLowerCase();
+    try {
+      // Build conversation history from existing messages
+      const conversationHistory = messages
+        .filter(m => m.type === 'user' || m.type === 'assistant')
+        .map(m => ({
+          role: m.type === 'user' ? 'user' as const : 'assistant' as const,
+          content: m.content,
+        }));
 
-    // Email open rates
-    if (lowerMessage.includes('open rate') || lowerMessage.includes('email open')) {
+      // Call real AI backend
+      const response = await aiService.chat({
+        message: userMessage,
+        conversationHistory,
+        context: {
+          // You can add user stats, recent campaigns, etc. here
+          // userStats: { ... },
+          // recentCampaigns: [ ... ],
+        },
+      });
+
       return {
-        content: "📧 **Improving Email Open Rates**\n\nBased on your current campaigns (avg 32% open rate), here are my top recommendations:\n\n1. **Subject Line Optimization**\n   • Use personalization (Name, Company)\n   • Keep it under 50 characters\n   • A/B test 3-5 variants\n   • Current best performer: \"{{Name}}, you're missing out on...\"\n\n2. **Send Time Optimization**\n   • Your audience responds best on Tuesday & Thursday at 10 AM\n   • Avoid Mondays and Fridays\n   • Test weekend sends for B2C\n\n3. **Sender Name**\n   • Use a person's name instead of company name\n   • 'Sarah from [Company]' performs 18% better\n\n4. **List Hygiene**\n   • Remove inactive subscribers (90+ days)\n   • Re-engagement campaign for at-risk contacts\n   • Expected improvement: +12-15% open rate\n\nWould you like me to create an A/B test for your next campaign?",
-        suggestions: [
-          'Yes, create an A/B test',
-          'Show me re-engagement templates',
-          'Analyze my best subject lines',
-        ],
-        actions: [
-          {
-            label: 'Create A/B Test',
-            icon: <ThunderboltOutlined />,
-            type: 'primary',
-            onClick: () => antdMessage.success('Opening A/B Test Manager...'),
-          },
-        ],
+        content: response.response,
+        suggestions: [], // Backend could return suggestions in future
+        actions: [], // Backend could return suggested actions in future
+      };
+    } catch (error: any) {
+      console.error('AI chat error:', error);
+      return {
+        content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.\n\nIf the problem persists, the AI service may not be configured. Please contact support.",
+        suggestions: [],
       };
     }
-
-    // Funnel analysis
-    if (lowerMessage.includes('funnel') || lowerMessage.includes('conversion')) {
-      return {
-        content: "📊 **Funnel Performance Analysis**\n\nI analyzed your top 3 funnels. Here's what I found:\n\n**Summer Sale Funnel** (Best Performer)\n• Conversion Rate: 18.5%\n• Revenue: $47,320\n• Biggest Drop-off: Checkout page (-42%)\n\n**Key Insights:**\n1. Landing page is crushing it (82% engagement)\n2. Checkout friction is costing you ~$18k/month\n3. Email sequence has 3x higher conversion than ads\n\n**Quick Wins:**\n1. Add trust badges to checkout\n2. Offer guest checkout option  \n3. Add exit-intent popup with 10% off\n4. Simplify form (remove 3 unnecessary fields)\n\n**Projected Impact:** +8-12% conversion rate, ~$6k extra revenue/month\n\nWant me to create a detailed optimization plan?",
-        suggestions: [
-          'Create optimization plan',
-          'Show checkout best practices',
-          'Compare with other funnels',
-        ],
-        actions: [
-          {
-            label: 'View Funnel Analytics',
-            icon: <BarChartOutlined />,
-            onClick: () => antdMessage.success('Opening Funnel Analytics...'),
-          },
-        ],
-      };
-    }
-
-    // Welcome sequence
-    if (lowerMessage.includes('welcome') || lowerMessage.includes('sequence') || lowerMessage.includes('automat')) {
-      return {
-        content: "🎉 **High-Converting Welcome Email Sequence**\n\nHere's a proven 5-email sequence that converts 23% of new subscribers:\n\n**Email 1: Immediate Welcome** (Send: Immediately)\n• Subject: \"Welcome! Here's your first win 🎁\"\n• Include: Brand story + Quick win/freebie\n• CTA: Download resource or take action\n\n**Email 2: Value Bomb** (Send: Day 2)\n• Subject: \"The #1 mistake [audience] makes...\"\n• Include: Educational content + Case study\n• CTA: Read blog post or watch video\n\n**Email 3: Social Proof** (Send: Day 4)\n• Subject: \"How [Customer] achieved [Result]...\"\n• Include: Customer success story + Results\n• CTA: See more testimonials\n\n**Email 4: The Offer** (Send: Day 7)\n• Subject: \"Special offer just for you\"\n• Include: Product/service intro + Discount\n• CTA: Shop now (20% off)\n\n**Email 5: Last Chance** (Send: Day 10)\n• Subject: \"Your 20% discount expires tonight\"\n• Include: Urgency + Scarcity + Benefits\n• CTA: Claim discount now\n\nShall I generate the full email copy for you?",
-        suggestions: [
-          'Generate email copy for sequence',
-          'Customize for my industry',
-          'Show me the stats',
-        ],
-        actions: [
-          {
-            label: 'Generate Full Sequence',
-            icon: <RocketOutlined />,
-            type: 'primary',
-            onClick: () => antdMessage.success('Generating welcome sequence...'),
-          },
-        ],
-      };
-    }
-
-    // At-risk customers
-    if (lowerMessage.includes('at-risk') || lowerMessage.includes('churn') || lowerMessage.includes('losing customer')) {
-      return {
-        content: "⚠️ **At-Risk Customer Analysis**\n\nI identified 23 high-value customers at risk of churning:\n\n**High Priority (12 contacts)**\n• Total LTV: $34,280\n• Avg days since last activity: 38 days\n• Previous engagement: 60%+ open rates\n• Current engagement: 0-5%\n\n**Top Risk Indicators:**\n1. No email opens in 30+ days\n2. Login frequency dropped 80%\n3. Support tickets increased\n4. Visited competitor sites\n\n**Recommended Win-Back Strategy:**\n\n**Phase 1: Personal Outreach** (Days 1-3)\n• Personal email from founder/CEO\n• Phone call from account manager\n• Special \"we miss you\" offer\n\n**Phase 2: Value Reminder** (Days 4-7)\n• ROI report showing their results\n• Case studies from similar customers\n• New features they haven't tried\n\n**Phase 3: Last-Ditch Offer** (Days 8-14)\n• Exclusive VIP discount (30-40% off)\n• Free month or upgrade\n• Exit survey if no response\n\n**Success Rate:** 68% win-back rate with this approach\n**Potential Revenue Saved:** $23,350\n\nShall I create these campaigns for you?",
-        suggestions: [
-          'Create win-back campaigns',
-          'Show me the contact list',
-          'Analyze churn reasons',
-        ],
-        actions: [
-          {
-            label: 'View Churn Dashboard',
-            icon: <TeamOutlined />,
-            onClick: () => antdMessage.success('Opening Churn Prediction...'),
-          },
-          {
-            label: 'Create Win-Back Campaign',
-            icon: <MailOutlined />,
-            type: 'primary',
-            onClick: () => antdMessage.success('Creating win-back campaign...'),
-          },
-        ],
-      };
-    }
-
-    // Default response for other queries
-    return {
-      content: "I understand you're asking about: \"" + userMessage + "\"\n\n🤔 Let me help you with that. Based on your question, here are some relevant insights:\n\n• Your overall campaign performance is strong (avg 32% open rate, 8.5% CTR)\n• You have 2,340 active contacts with high engagement\n• Your best-performing channel is email (3x ROI vs social)\n• Your funnels convert at 14.2% on average\n\nCould you be more specific about what you'd like to accomplish? I can help with:\n\n✅ Campaign strategy and optimization\n✅ Content creation and copywriting\n✅ Audience segmentation\n✅ Performance analysis\n✅ A/B testing recommendations\n✅ Automation workflows",
-      suggestions: [
-        'How do I increase sales?',
-        'What\'s my best-performing campaign?',
-        'Create a new email campaign',
-        'Segment my audience',
-      ],
-    };
   };
 
   const handleSendMessage = async () => {
@@ -190,25 +126,34 @@ const AIAssistantChat: React.FC<AIAssistantChatProps> = ({ visible, onClose }) =
       timestamp: new Date(),
     };
 
+    const messageToSend = inputValue;
     setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate AI thinking delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const aiResponse = await generateAIResponse(messageToSend);
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: 'assistant',
+        content: aiResponse.content || 'I apologize, but I could not generate a response.',
+        timestamp: new Date(),
+        suggestions: aiResponse.suggestions,
+        actions: aiResponse.actions,
+      };
 
-    const aiResponse = await generateAIResponse(inputValue);
-    const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      type: 'assistant',
-      content: aiResponse.content || '',
-      timestamp: new Date(),
-      suggestions: aiResponse.suggestions,
-      actions: aiResponse.actions,
-    };
-
-    setMessages((prev) => [...prev, assistantMessage]);
-    setIsTyping(false);
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: 'assistant',
+        content: "I'm sorry, I encountered an error. Please try again.",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {

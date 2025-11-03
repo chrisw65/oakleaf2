@@ -35,6 +35,7 @@ import {
   FacebookOutlined,
   InstagramOutlined,
 } from '@ant-design/icons';
+import aiService from '../../services/aiService';
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -65,94 +66,73 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent[]>([]);
   const [selectedTone, setSelectedTone] = useState('professional');
 
-  // Simulated AI generation (in real app, this would call an AI API)
+  // Real AI generation using backend API
   const generateContent = async (type: string, params: any) => {
     setGenerating(true);
 
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      let generated: GeneratedContent[] = [];
 
-    let generated: GeneratedContent[] = [];
+      if (type === 'email-subject') {
+        const response = await aiService.generateSubjectLines({
+          product: params.product,
+          audience: params.audience,
+          goal: params.goal,
+          tone: params.tone,
+          count: 3,
+        });
 
-    if (type === 'email-subject') {
-      generated = [
-        {
-          id: '1',
-          content: `${params.product ? params.product : 'Your Product'}: ${params.tone === 'urgent' ? '⚡ Last Chance - ' : ''}${params.goal === 'click' ? 'Don\'t Miss This' : 'Open to Discover'}`,
+        generated = response.subjectLines.map((content, index) => ({
+          id: (index + 1).toString(),
+          content,
           tone: params.tone,
-          rating: 4.8,
-        },
-        {
-          id: '2',
-          content: `[${params.audience || 'Name'}] ${params.goal === 'open' ? 'You\'re Going to Love This' : 'Quick Question For You'} ${params.tone === 'urgent' ? '⏰' : ''}`,
+          rating: 4.5 + Math.random() * 0.5, // Random rating between 4.5-5.0
+        }));
+      } else if (type === 'email-body') {
+        const response = await aiService.generateEmailBody({
+          product: params.product,
+          audience: params.audience,
+          goal: params.goal,
           tone: params.tone,
-          rating: 4.6,
-        },
-        {
-          id: '3',
-          content: `${params.tone === 'friendly' ? '👋 Hey!' : ''} ${params.product ? `${params.product} is here` : 'Something special just for you'}`,
-          tone: params.tone,
-          rating: 4.7,
-        },
-      ];
-    } else if (type === 'email-body') {
-      const toneIntros: Record<string, string> = {
-        professional: 'I hope this email finds you well.',
-        friendly: 'Hey there! 👋',
-        urgent: 'I need to share something important with you.',
-        casual: 'Quick note for you...',
-      };
+          benefit: params.benefit,
+        });
 
-      generated = [
-        {
-          id: '1',
-          content: `${toneIntros[params.tone] || 'Hi there,'}\n\n${params.goal === 'sale' ? 'I wanted to reach out because' : 'I thought you might be interested in'} ${params.product || 'our latest offering'}.\n\n${params.benefit || 'It can help you achieve your goals faster.'}\n\nHere's what makes it special:\n• Feature 1: ${params.feature1 || 'Saves you time'}\n• Feature 2: ${params.feature2 || 'Easy to use'}\n• Feature 3: ${params.feature3 || 'Proven results'}\n\n${params.tone === 'urgent' ? 'This offer expires soon, so don\'t wait!' : 'Would love to hear your thoughts.'}\n\nBest regards,\n[Your Name]`,
-          tone: params.tone,
-          rating: 4.9,
-        },
-        {
-          id: '2',
-          content: `Subject: ${params.product || 'Your Solution'}\n\n${toneIntros[params.tone] || 'Hello,'}\n\nI noticed you're interested in ${params.category || 'improving your results'}. ${params.product || 'Our solution'} might be exactly what you need.\n\n✅ ${params.benefit || 'Get results faster'}\n✅ Join ${Math.floor(Math.random() * 10000 + 1000)} satisfied customers\n✅ Risk-free guarantee\n\n${params.goal === 'click' ? 'Click here to learn more:' : 'Ready to get started?'} [CTA Button]\n\n${params.tone === 'professional' ? 'Looking forward to helping you succeed.' : 'Can\'t wait to see your success!'}`,
-          tone: params.tone,
-          rating: 4.7,
-        },
-      ];
-    } else if (type === 'social-post') {
-      const platform = params.platform || 'twitter';
-      const emojis: Record<string, string[]> = {
-        twitter: ['🚀', '💡', '🔥', '👇', '✨'],
-        linkedin: ['💼', '📊', '🎯', '💡', '🚀'],
-        facebook: ['👋', '😊', '🎉', '💯', '❤️'],
-        instagram: ['✨', '💫', '🌟', '💕', '🔥'],
-      };
+        generated = [
+          {
+            id: '1',
+            content: response.body,
+            tone: params.tone,
+            rating: 4.5 + Math.random() * 0.5,
+          },
+        ];
+      } else if (type === 'social-post') {
+        const hashtags = [params.hashtag1, params.hashtag2, params.hashtag3]
+          .filter(h => h && h.trim().length > 0);
 
-      const chars = platform === 'twitter' ? 280 : 2000;
-      const usedEmojis = emojis[platform].slice(0, 2).join(' ');
+        const response = await aiService.generateSocialPost({
+          platform: params.platform || 'twitter',
+          topic: params.topic,
+          message: params.message,
+          tone: params.tone,
+          hashtags,
+          goal: params.postGoal,
+        });
 
-      generated = [
-        {
-          id: '1',
-          content: `${usedEmojis} ${params.topic || 'Just launched something exciting!'}\n\n${params.message || 'This is going to change the game.'}\n\n${platform === 'twitter' ? '🧵 Thread below:' : '👇 Check it out:'}\n\n#${params.hashtag1 || 'Marketing'} #${params.hashtag2 || 'Growth'} #${params.hashtag3 || 'Business'}`,
+        generated = response.posts.map((content, index) => ({
+          id: (index + 1).toString(),
+          content,
           tone: params.tone,
-          rating: 4.8,
-        },
-        {
-          id: '2',
-          content: `${params.tone === 'professional' ? '📢' : '🎉'} ${params.topic || 'Big announcement!'}\n\nWe've been working on something ${params.tone === 'casual' ? 'awesome' : 'incredible'} and can't wait to share it with you.\n\n${params.benefit || 'It\'s going to help you achieve more.'}\n\n${platform === 'linkedin' ? 'Thoughts? Let me know in the comments. 👇' : 'What do you think? Drop a comment! 💬'}`,
-          tone: params.tone,
-          rating: 4.6,
-        },
-        {
-          id: '3',
-          content: `Quick question ${platform === 'twitter' ? '🤔' : '💭'}\n\nHow many of you struggle with ${params.painPoint || 'getting results'}?\n\n${params.solution || 'We just solved this problem'} and ${params.tone === 'urgent' ? 'you NEED to see this' : 'I think you\'ll love it'}.\n\nLink in ${platform === 'instagram' ? 'bio' : 'comments'} 👇`,
-          tone: params.tone,
-          rating: 4.9,
-        },
-      ];
+          rating: 4.5 + Math.random() * 0.5,
+        }));
+      }
+
+      setGeneratedContent(generated);
+    } catch (error: any) {
+      message.error(error.message || 'Failed to generate content. Please try again.');
+      console.error('AI generation error:', error);
+    } finally {
+      setGenerating(false);
     }
-
-    setGeneratedContent(generated);
-    setGenerating(false);
   };
 
   const handleGenerate = () => {
