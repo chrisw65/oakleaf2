@@ -144,7 +144,7 @@ const DashboardPage: React.FC = () => {
     label: {
       type: 'spider' as const,
       labelHeight: 28,
-      content: '{name}\n{percentage}',
+      formatter: (datum: any) => `${datum.type}\n${datum.value}%`,
       style: {
         fontSize: 12,
       },

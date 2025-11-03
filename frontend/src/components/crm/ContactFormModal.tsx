@@ -32,10 +32,9 @@ const ContactFormModal: React.FC<ContactFormModalProps> = ({
           email: contact.email,
           phone: contact.phone,
           company: contact.company,
-          title: contact.title,
+          jobTitle: contact.jobTitle,
           source: contact.source,
           status: contact.status,
-          notes: contact.notes,
           tagIds: contact.tags?.map((t) => t.id),
         });
       } else {
@@ -64,10 +63,9 @@ const ContactFormModal: React.FC<ContactFormModalProps> = ({
         email: values.email,
         phone: values.phone,
         company: values.company,
-        title: values.title,
+        jobTitle: values.jobTitle,
         source: values.source,
         status: values.status || ContactStatus.LEAD,
-        notes: values.notes,
         tagIds: values.tagIds,
       };
 
@@ -140,7 +138,7 @@ const ContactFormModal: React.FC<ContactFormModalProps> = ({
           <Input placeholder="Enter company name" />
         </Form.Item>
 
-        <Form.Item label="Title" name="title">
+        <Form.Item label="Job Title" name="jobTitle">
           <Input placeholder="Enter job title" />
         </Form.Item>
 
@@ -172,10 +170,6 @@ const ContactFormModal: React.FC<ContactFormModalProps> = ({
               </Option>
             ))}
           </Select>
-        </Form.Item>
-
-        <Form.Item label="Notes" name="notes">
-          <TextArea rows={4} placeholder="Add notes about this contact" />
         </Form.Item>
       </Form>
     </Modal>

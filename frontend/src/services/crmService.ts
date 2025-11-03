@@ -12,13 +12,12 @@ export interface Contact {
   email: string;
   phone?: string;
   company?: string;
-  title?: string;
+  jobTitle?: string;
   source?: string;
   status: ContactStatus;
   score?: number;
   tags?: Tag[];
   customFields?: Record<string, any>;
-  notes?: string;
   lastContactedAt?: string;
   createdAt: string;
   updatedAt: string;
@@ -38,16 +37,15 @@ export interface Tag {
 }
 
 export interface CreateContactDto {
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
   phone?: string;
   company?: string;
-  title?: string;
+  jobTitle?: string;
   source?: string;
   status?: ContactStatus;
   customFields?: Record<string, any>;
-  notes?: string;
   tagIds?: string[];
 }
 
@@ -161,7 +159,7 @@ class CrmService {
     const params = new URLSearchParams();
     if (filters?.search) params.append('search', filters.search);
     if (filters?.status) params.append('status', filters.status);
-    if (filters?.tags?.length) params.append('tags', filters.tags.join(','));
+    if (filters?.tags?.length) params.append('tagIds', filters.tags.join(','));
     if (filters?.page) params.append('page', filters.page.toString());
     if (filters?.limit) params.append('limit', filters.limit.toString());
     if (filters?.sortBy) params.append('sortBy', filters.sortBy);
