@@ -162,7 +162,6 @@ const SendTimeOptimizer: React.FC<SendTimeOptimizerProps> = ({
     data: performanceByDay,
     xField: 'day',
     yField: 'openRate',
-    seriesField: 'type',
     columnStyle: {
       radius: [8, 8, 0, 0],
     },

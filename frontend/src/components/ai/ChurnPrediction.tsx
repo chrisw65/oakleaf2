@@ -331,7 +331,6 @@ const ChurnPrediction: React.FC<ChurnPredictionProps> = ({
     data: churnTrendData,
     xField: 'month',
     yField: 'count',
-    seriesField: 'type',
     color: '#ef4444',
     columnStyle: {
       radius: [8, 8, 0, 0],
