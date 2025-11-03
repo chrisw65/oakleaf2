@@ -398,6 +398,36 @@ const AdvancedEmailTemplateLibrary: React.FC<AdvancedEmailTemplateLibraryProps> 
     message.success('Template copied to clipboard!');
   };
 
+  // Get category-specific gradient
+  const getCategoryGradient = (category: string): string => {
+    const gradients: Record<string, string> = {
+      welcome: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      promotional: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      transactional: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      nurture: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      reengagement: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      abandoned: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+      announcement: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+      newsletter: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+    };
+    return gradients[category] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+  };
+
+  // Get category-specific icon
+  const getCategoryIcon = (category: string): React.ReactNode => {
+    const icons: Record<string, React.ReactNode> = {
+      welcome: <RocketOutlined />,
+      promotional: <GiftOutlined />,
+      transactional: <ShoppingCartOutlined />,
+      nurture: <HeartOutlined />,
+      reengagement: <ThunderboltOutlined />,
+      abandoned: <BellOutlined />,
+      announcement: <TrophyOutlined />,
+      newsletter: <MailOutlined />,
+    };
+    return icons[category] || <MailOutlined />;
+  };
+
   return (
     <Modal
       title={
@@ -493,6 +523,71 @@ const AdvancedEmailTemplateLibrary: React.FC<AdvancedEmailTemplateLibraryProps> 
                   <Card
                     hoverable
                     style={{ height: '100%' }}
+                    cover={
+                      <div
+                        style={{
+                          height: 180,
+                          background: getCategoryGradient(template.category),
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: 24,
+                          position: 'relative',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {/* Background pattern */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            opacity: 0.1,
+                            backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.05) 10px, rgba(255,255,255,.05) 20px)',
+                          }}
+                        />
+
+                        {/* Icon */}
+                        <div
+                          style={{
+                            fontSize: 48,
+                            color: 'white',
+                            marginBottom: 16,
+                            position: 'relative',
+                            zIndex: 1,
+                          }}
+                        >
+                          {getCategoryIcon(template.category)}
+                        </div>
+
+                        {/* Email preview mockup */}
+                        <div
+                          style={{
+                            background: 'white',
+                            borderRadius: 8,
+                            padding: '12px 16px',
+                            width: '90%',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                            position: 'relative',
+                            zIndex: 1,
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 6 }}>
+                            <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#e2e8f0', marginRight: 8 }} />
+                            <div style={{ flex: 1 }}>
+                              <div style={{ height: 8, background: '#e2e8f0', borderRadius: 4, width: '70%', marginBottom: 4 }} />
+                              <div style={{ height: 6, background: '#f1f5f9', borderRadius: 3, width: '50%' }} />
+                            </div>
+                          </div>
+                          <div style={{ height: 6, background: '#1e293b', borderRadius: 3, width: '90%', marginTop: 8 }} />
+                          <div style={{ height: 6, background: '#cbd5e1', borderRadius: 3, width: '75%', marginTop: 4 }} />
+                          <div style={{ height: 6, background: '#cbd5e1', borderRadius: 3, width: '85%', marginTop: 4 }} />
+                        </div>
+                      </div>
+                    }
                     actions={[
                       <Tooltip title="Preview">
                         <Button
