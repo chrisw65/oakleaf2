@@ -31,7 +31,7 @@ import {
 } from '../dto/opportunity.dto';
 
 @ApiTags('Opportunities')
-@Controller('opportunities')
+@Controller('crm/opportunities')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class OpportunityController {

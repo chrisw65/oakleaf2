@@ -26,7 +26,7 @@ import {
 @ApiTags('Email Templates')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('email-templates')
+@Controller('email/templates')
 export class EmailTemplateController {
   constructor(private readonly emailTemplateService: EmailTemplateService) {}
 

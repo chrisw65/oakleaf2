@@ -26,7 +26,7 @@ import {
 @ApiTags('Email Campaigns')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('email-campaigns')
+@Controller('email/campaigns')
 export class EmailCampaignController {
   constructor(private readonly emailCampaignService: EmailCampaignService) {}
 

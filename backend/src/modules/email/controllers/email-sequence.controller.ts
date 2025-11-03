@@ -28,7 +28,7 @@ import {
 @ApiTags('Email Sequences')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('email-sequences')
+@Controller('email/sequences')
 export class EmailSequenceController {
   constructor(private readonly emailSequenceService: EmailSequenceService) {}
 
