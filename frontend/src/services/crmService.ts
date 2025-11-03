@@ -24,10 +24,11 @@ export interface Contact {
 }
 
 export enum ContactStatus {
-  LEAD = 'lead',
-  PROSPECT = 'prospect',
-  CUSTOMER = 'customer',
+  ACTIVE = 'active',
   INACTIVE = 'inactive',
+  UNSUBSCRIBED = 'unsubscribed',
+  BOUNCED = 'bounced',
+  BLOCKED = 'blocked',
 }
 
 export interface Tag {
