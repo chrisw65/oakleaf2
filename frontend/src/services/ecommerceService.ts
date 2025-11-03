@@ -212,7 +212,7 @@ class EcommerceService {
   }
 
   async updateProduct(id: string, data: UpdateProductDto): Promise<Product> {
-    return apiService.patch(`/products/${id}`, data);
+    return apiService.put(`/products/${id}`, data);
   }
 
   async deleteProduct(id: string): Promise<void> {
@@ -220,7 +220,7 @@ class EcommerceService {
   }
 
   async updateInventory(id: string, quantity: number): Promise<Product> {
-    return apiService.patch(`/products/${id}/inventory`, { quantity });
+    return apiService.put(`/products/${id}/inventory`, { quantity });
   }
 
   // CART
@@ -233,7 +233,7 @@ class EcommerceService {
   }
 
   async updateCartItem(itemId: string, data: UpdateCartItemDto): Promise<Cart> {
-    return apiService.patch(`/cart/items/${itemId}`, data);
+    return apiService.put(`/cart/items/${itemId}`, data);
   }
 
   async removeFromCart(itemId: string): Promise<Cart> {
@@ -258,7 +258,7 @@ class EcommerceService {
   }
 
   async updateOrder(id: string, data: UpdateOrderDto): Promise<Order> {
-    return apiService.patch(`/orders/${id}`, data);
+    return apiService.put(`/orders/${id}`, data);
   }
 
   async cancelOrder(id: string): Promise<Order> {

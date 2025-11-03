@@ -235,7 +235,7 @@ class EmailService {
   }
 
   async updateCampaign(id: string, data: UpdateCampaignDto): Promise<EmailCampaign> {
-    return apiService.patch(`/email/campaigns/${id}`, data);
+    return apiService.put(`/email/campaigns/${id}`, data);
   }
 
   async deleteCampaign(id: string): Promise<void> {
@@ -272,7 +272,7 @@ class EmailService {
   }
 
   async updateTemplate(id: string, data: UpdateTemplateDto): Promise<EmailTemplate> {
-    return apiService.patch(`/email/templates/${id}`, data);
+    return apiService.put(`/email/templates/${id}`, data);
   }
 
   async deleteTemplate(id: string): Promise<void> {
@@ -297,7 +297,7 @@ class EmailService {
   }
 
   async updateSequence(id: string, data: UpdateSequenceDto): Promise<EmailSequence> {
-    return apiService.patch(`/email/sequences/${id}`, data);
+    return apiService.put(`/email/sequences/${id}`, data);
   }
 
   async deleteSequence(id: string): Promise<void> {
@@ -309,7 +309,7 @@ class EmailService {
   }
 
   async updateSequenceStep(sequenceId: string, stepId: string, data: Partial<CreateSequenceStepDto>): Promise<EmailSequence> {
-    return apiService.patch(`/email/sequences/${sequenceId}/steps/${stepId}`, data);
+    return apiService.put(`/email/sequences/${sequenceId}/steps/${stepId}`, data);
   }
 
   async deleteSequenceStep(sequenceId: string, stepId: string): Promise<EmailSequence> {
@@ -334,7 +334,7 @@ class EmailService {
   }
 
   async updateSegment(id: string, data: UpdateSegmentDto): Promise<Segment> {
-    return apiService.patch(`/email/segments/${id}`, data);
+    return apiService.put(`/email/segments/${id}`, data);
   }
 
   async deleteSegment(id: string): Promise<void> {
