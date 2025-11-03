@@ -195,7 +195,7 @@ class FunnelService {
   }
 
   async updateFunnel(id: string, data: UpdateFunnelDto): Promise<Funnel> {
-    return apiService.patch(`/funnels/${id}`, data);
+    return apiService.put(`/funnels/${id}`, data);
   }
 
   async deleteFunnel(id: string): Promise<void> {
@@ -228,7 +228,7 @@ class FunnelService {
   }
 
   async updatePage(funnelId: string, pageId: string, data: UpdatePageDto): Promise<FunnelPage> {
-    return apiService.patch(`/funnels/${funnelId}/pages/${pageId}`, data);
+    return apiService.put(`/funnels/${funnelId}/pages/${pageId}`, data);
   }
 
   async deletePage(funnelId: string, pageId: string): Promise<void> {
@@ -253,7 +253,7 @@ class FunnelService {
   }
 
   async updateVariant(funnelId: string, pageId: string, variantId: string, data: any): Promise<FunnelPageVariant> {
-    return apiService.patch(`/funnels/${funnelId}/pages/${pageId}/variants/${variantId}`, data);
+    return apiService.put(`/funnels/${funnelId}/pages/${pageId}/variants/${variantId}`, data);
   }
 
   async deleteVariant(funnelId: string, pageId: string, variantId: string): Promise<void> {
