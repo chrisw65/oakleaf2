@@ -13,6 +13,7 @@ import {
   Statistic,
   Row,
   Col,
+  Tooltip,
 } from 'antd';
 import type { MenuProps, TableProps } from 'antd';
 import {
@@ -26,12 +27,17 @@ import {
   PauseCircleOutlined,
   EyeOutlined,
   LineChartOutlined,
+  ThunderboltOutlined,
+  ApiOutlined,
+  AppstoreAddOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { Funnel, FunnelStatus, funnelService } from '../../services/funnelService';
 import FunnelFormModal from '../../components/funnels/FunnelFormModal';
+import FunnelTemplateLibrary from '../../components/funnels/FunnelTemplateLibrary';
+import IntegrationHub from '../../components/funnels/IntegrationHub';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const FunnelsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -40,6 +46,8 @@ const FunnelsPage: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingFunnel, setEditingFunnel] = useState<Funnel | null>(null);
+  const [isTemplateLibraryVisible, setIsTemplateLibraryVisible] = useState(false);
+  const [isIntegrationHubVisible, setIsIntegrationHubVisible] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -325,13 +333,43 @@ const FunnelsPage: React.FC = () => {
 
       <Card>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Title level={2} style={{ margin: 0 }}>
-              Funnels
-            </Title>
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateFunnel}>
-              Create Funnel
-            </Button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+            <div>
+              <Title level={2} style={{ margin: 0 }}>
+                Funnels
+              </Title>
+              <Text type="secondary">
+                Build high-converting funnels with our visual builder
+              </Text>
+            </div>
+            <Space wrap>
+              <Tooltip title="Browse pre-built funnel templates">
+                <Button
+                  icon={<ThunderboltOutlined />}
+                  onClick={() => setIsTemplateLibraryVisible(true)}
+                  size="large"
+                >
+                  Templates
+                </Button>
+              </Tooltip>
+              <Tooltip title="Connect your tools and integrations">
+                <Button
+                  icon={<ApiOutlined />}
+                  onClick={() => setIsIntegrationHubVisible(true)}
+                  size="large"
+                >
+                  Integrations
+                </Button>
+              </Tooltip>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={handleCreateFunnel}
+                size="large"
+              >
+                Create Funnel
+              </Button>
+            </Space>
           </div>
 
           <Input
@@ -370,6 +408,22 @@ const FunnelsPage: React.FC = () => {
           setEditingFunnel(null);
           fetchFunnels();
         }}
+      />
+
+      <FunnelTemplateLibrary
+        visible={isTemplateLibraryVisible}
+        onCancel={() => setIsTemplateLibraryVisible(false)}
+        onSelectTemplate={(templateId) => {
+          setIsTemplateLibraryVisible(false);
+          message.success(`Creating funnel from ${templateId} template...`);
+          // TODO: Implement template-based funnel creation
+          handleCreateFunnel();
+        }}
+      />
+
+      <IntegrationHub
+        visible={isIntegrationHubVisible}
+        onCancel={() => setIsIntegrationHubVisible(false)}
       />
     </div>
   );
