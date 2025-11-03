@@ -28,6 +28,9 @@ import {
   AppstoreOutlined,
   MessageOutlined,
   ExperimentOutlined,
+  BulbOutlined,
+  TeamOutlined,
+  FieldTimeOutlined,
 } from '@ant-design/icons';
 import { EmailCampaign, CampaignStatus, emailService } from '../../services/emailService';
 import CampaignFormModal from '../../components/email/CampaignFormModal';
@@ -35,6 +38,9 @@ import AIEmailMarketingCoach from '../../components/email/AIEmailMarketingCoach'
 import AdvancedEmailTemplateLibrary from '../../components/email/AdvancedEmailTemplateLibrary';
 import EmailAutomationBuilder from '../../components/email/EmailAutomationBuilder';
 import ABTestingManager from '../../components/email/ABTestingManager';
+import AIContentGenerator from '../../components/ai/AIContentGenerator';
+import SendTimeOptimizer from '../../components/ai/SendTimeOptimizer';
+import SmartSegmentation from '../../components/ai/SmartSegmentation';
 import { format } from 'date-fns';
 
 const { Title } = Typography;
@@ -48,6 +54,9 @@ const CampaignsPage: React.FC = () => {
   const [isTemplateLibraryVisible, setIsTemplateLibraryVisible] = useState(false);
   const [isAutomationBuilderVisible, setIsAutomationBuilderVisible] = useState(false);
   const [isABTestingVisible, setIsABTestingVisible] = useState(false);
+  const [isContentGeneratorVisible, setIsContentGeneratorVisible] = useState(false);
+  const [isSendTimeOptimizerVisible, setIsSendTimeOptimizerVisible] = useState(false);
+  const [isSmartSegmentationVisible, setIsSmartSegmentationVisible] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -299,13 +308,34 @@ const CampaignsPage: React.FC = () => {
             <Title level={2} style={{ margin: 0 }}>
               Email Campaigns
             </Title>
-            <Space>
+            <Space wrap>
               <Button
                 icon={<RobotOutlined />}
                 onClick={() => setIsAICoachVisible(true)}
                 style={{ borderColor: '#6366f1', color: '#6366f1' }}
               >
                 AI Coach
+              </Button>
+              <Button
+                icon={<BulbOutlined />}
+                onClick={() => setIsContentGeneratorVisible(true)}
+                style={{ borderColor: '#8b5cf6', color: '#8b5cf6' }}
+              >
+                AI Content
+              </Button>
+              <Button
+                icon={<FieldTimeOutlined />}
+                onClick={() => setIsSendTimeOptimizerVisible(true)}
+                style={{ borderColor: '#10b981', color: '#10b981' }}
+              >
+                Send Time AI
+              </Button>
+              <Button
+                icon={<TeamOutlined />}
+                onClick={() => setIsSmartSegmentationVisible(true)}
+                style={{ borderColor: '#f59e0b', color: '#f59e0b' }}
+              >
+                Smart Segments
               </Button>
               <Button
                 icon={<ExperimentOutlined />}
@@ -380,6 +410,24 @@ const CampaignsPage: React.FC = () => {
         onClose={() => setIsABTestingVisible(false)}
         onCreateTest={(test) => {
           message.success(`A/B Test "${test.name}" created successfully!`);
+        }}
+      />
+
+      <AIContentGenerator
+        visible={isContentGeneratorVisible}
+        onClose={() => setIsContentGeneratorVisible(false)}
+      />
+
+      <SendTimeOptimizer
+        visible={isSendTimeOptimizerVisible}
+        onClose={() => setIsSendTimeOptimizerVisible(false)}
+      />
+
+      <SmartSegmentation
+        visible={isSmartSegmentationVisible}
+        onClose={() => setIsSmartSegmentationVisible(false)}
+        onCreateSegment={(segment) => {
+          message.success(`Segment "${segment.name}" created!`);
         }}
       />
     </div>

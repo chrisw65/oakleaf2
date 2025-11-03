@@ -17,11 +17,13 @@ import {
   AuditOutlined,
   BellOutlined,
   SearchOutlined,
+  RobotOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import CommandPalette from '../common/CommandPalette';
 import NotificationBell from '../common/NotificationBell';
+import AIAssistantChat from '../ai/AIAssistantChat';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -29,6 +31,7 @@ const { Text } = Typography;
 const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [commandPaletteVisible, setCommandPaletteVisible] = useState(false);
+  const [aiChatVisible, setAiChatVisible] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -307,6 +310,31 @@ const MainLayout: React.FC = () => {
 
           {/* Right Actions */}
           <Space size="large">
+            {/* AI Assistant */}
+            <Tooltip title="AI Marketing Assistant">
+              <Button
+                type="text"
+                icon={
+                  <RobotOutlined
+                    style={{
+                      fontSize: 20,
+                      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  />
+                }
+                onClick={() => setAiChatVisible(true)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            </Tooltip>
+
             {/* Notifications */}
             <NotificationBell />
 
@@ -401,6 +429,12 @@ const MainLayout: React.FC = () => {
       <CommandPalette
         visible={commandPaletteVisible}
         onClose={() => setCommandPaletteVisible(false)}
+      />
+
+      {/* AI Assistant Chat */}
+      <AIAssistantChat
+        visible={aiChatVisible}
+        onClose={() => setAiChatVisible(false)}
       />
     </Layout>
   );
