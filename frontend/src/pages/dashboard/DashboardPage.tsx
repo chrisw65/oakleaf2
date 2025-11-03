@@ -120,7 +120,6 @@ const DashboardPage: React.FC = () => {
     data: conversionData,
     xField: 'stage',
     yField: 'count',
-    seriesField: 'stage',
     color: ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd'],
     columnStyle: {
       radius: [8, 8, 0, 0],
