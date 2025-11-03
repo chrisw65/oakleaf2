@@ -65,7 +65,7 @@ const ContactFormModal: React.FC<ContactFormModalProps> = ({
         company: values.company,
         jobTitle: values.jobTitle,
         source: values.source,
-        status: values.status || ContactStatus.LEAD,
+        status: values.status || ContactStatus.ACTIVE,
         tagIds: values.tagIds,
       };
 
@@ -155,10 +155,11 @@ const ContactFormModal: React.FC<ContactFormModalProps> = ({
 
         <Form.Item label="Status" name="status">
           <Select placeholder="Select status">
-            <Option value={ContactStatus.LEAD}>Lead</Option>
-            <Option value={ContactStatus.PROSPECT}>Prospect</Option>
-            <Option value={ContactStatus.CUSTOMER}>Customer</Option>
+            <Option value={ContactStatus.ACTIVE}>Active</Option>
             <Option value={ContactStatus.INACTIVE}>Inactive</Option>
+            <Option value={ContactStatus.UNSUBSCRIBED}>Unsubscribed</Option>
+            <Option value={ContactStatus.BOUNCED}>Bounced</Option>
+            <Option value={ContactStatus.BLOCKED}>Blocked</Option>
           </Select>
         </Form.Item>
 

@@ -115,15 +115,18 @@ export enum OrderStatus {
   PENDING = 'pending',
   PROCESSING = 'processing',
   COMPLETED = 'completed',
-  CANCELED = 'canceled',
+  CANCELLED = 'cancelled',
+  REFUNDED = 'refunded',
+  FAILED = 'failed',
 }
 
 export enum PaymentStatus {
+  UNPAID = 'unpaid',
   PENDING = 'pending',
   PAID = 'paid',
-  FAILED = 'failed',
-  REFUNDED = 'refunded',
   PARTIALLY_REFUNDED = 'partially_refunded',
+  REFUNDED = 'refunded',
+  FAILED = 'failed',
 }
 
 export enum FulfillmentStatus {

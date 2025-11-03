@@ -30,6 +30,8 @@ export enum CampaignStatus {
   SENDING = 'sending',
   SENT = 'sent',
   PAUSED = 'paused',
+  CANCELLED = 'cancelled',
+  ARCHIVED = 'archived',
 }
 
 export interface CampaignStats {

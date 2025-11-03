@@ -62,8 +62,10 @@ export interface Funnel {
   id: string;
   tenantId: string;
   name: string;
+  slug: string;
   description?: string;
   status: FunnelStatus;
+  customDomain?: string;
   domain?: string;
   subdomain?: string;
   // Pages
