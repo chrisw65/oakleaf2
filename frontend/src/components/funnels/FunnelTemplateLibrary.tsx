@@ -203,6 +203,18 @@ const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
     return matchesSearch && matchesCategory;
   });
 
+  // Get category-specific gradient for funnel templates
+  const getCategoryGradient = (category: string): string => {
+    const gradients: Record<string, string> = {
+      'lead-gen': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      'ecommerce': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      'webinar': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      'course': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      'product-launch': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    };
+    return gradients[category] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+  };
+
   return (
     <Modal
       title={
@@ -265,16 +277,58 @@ const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
                   cover={
                     <div
                       style={{
-                        height: 180,
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        height: 200,
+                        background: getCategoryGradient(template.category),
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: 48,
+                        fontSize: 56,
                         color: 'white',
+                        position: 'relative',
+                        overflow: 'hidden',
                       }}
                     >
-                      {template.icon}
+                      {/* Background pattern */}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          opacity: 0.1,
+                          backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.05) 10px, rgba(255,255,255,.05) 20px)',
+                        }}
+                      />
+
+                      {/* Icon with shadow */}
+                      <div
+                        style={{
+                          position: 'relative',
+                          zIndex: 1,
+                          textShadow: '0 4px 8px rgba(0,0,0,0.2)',
+                        }}
+                      >
+                        {template.icon}
+                      </div>
+
+                      {/* Pages indicator */}
+                      <div
+                        style={{
+                          marginTop: 16,
+                          background: 'rgba(255, 255, 255, 0.2)',
+                          backdropFilter: 'blur(10px)',
+                          padding: '6px 16px',
+                          borderRadius: 20,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          position: 'relative',
+                          zIndex: 1,
+                        }}
+                      >
+                        {template.pages} Pages
+                      </div>
                     </div>
                   }
                   actions={[
@@ -306,17 +360,18 @@ const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
                           {template.description}
                         </Paragraph>
 
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            marginBottom: 12,
-                          }}
-                        >
-                          <Text type="secondary" style={{ fontSize: 12 }}>
-                            {template.pages} Pages
-                          </Text>
-                          <Tag color="success">Avg CVR: {template.conversionRate}</Tag>
+                        <div style={{ marginBottom: 12, textAlign: 'center' }}>
+                          <Tag
+                            color="success"
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              padding: '4px 16px',
+                              borderRadius: 16,
+                            }}
+                          >
+                            ⚡ Avg CVR: {template.conversionRate}
+                          </Tag>
                         </div>
 
                         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
