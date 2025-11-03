@@ -27,12 +27,14 @@ import {
   ThunderboltOutlined,
   AppstoreOutlined,
   MessageOutlined,
+  ExperimentOutlined,
 } from '@ant-design/icons';
 import { EmailCampaign, CampaignStatus, emailService } from '../../services/emailService';
 import CampaignFormModal from '../../components/email/CampaignFormModal';
 import AIEmailMarketingCoach from '../../components/email/AIEmailMarketingCoach';
 import AdvancedEmailTemplateLibrary from '../../components/email/AdvancedEmailTemplateLibrary';
 import EmailAutomationBuilder from '../../components/email/EmailAutomationBuilder';
+import ABTestingManager from '../../components/email/ABTestingManager';
 import { format } from 'date-fns';
 
 const { Title } = Typography;
@@ -45,6 +47,7 @@ const CampaignsPage: React.FC = () => {
   const [isAICoachVisible, setIsAICoachVisible] = useState(false);
   const [isTemplateLibraryVisible, setIsTemplateLibraryVisible] = useState(false);
   const [isAutomationBuilderVisible, setIsAutomationBuilderVisible] = useState(false);
+  const [isABTestingVisible, setIsABTestingVisible] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -305,6 +308,12 @@ const CampaignsPage: React.FC = () => {
                 AI Coach
               </Button>
               <Button
+                icon={<ExperimentOutlined />}
+                onClick={() => setIsABTestingVisible(true)}
+              >
+                A/B Testing
+              </Button>
+              <Button
                 icon={<AppstoreOutlined />}
                 onClick={() => setIsTemplateLibraryVisible(true)}
               >
@@ -364,6 +373,14 @@ const CampaignsPage: React.FC = () => {
       <EmailAutomationBuilder
         visible={isAutomationBuilderVisible}
         onClose={() => setIsAutomationBuilderVisible(false)}
+      />
+
+      <ABTestingManager
+        visible={isABTestingVisible}
+        onClose={() => setIsABTestingVisible(false)}
+        onCreateTest={(test) => {
+          message.success(`A/B Test "${test.name}" created successfully!`);
+        }}
       />
     </div>
   );

@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
-import { Card, Tabs, Typography } from 'antd';
-import { MessageOutlined, BellOutlined } from '@ant-design/icons';
+import { Card, Tabs, Typography, Space, Button } from 'antd';
+import { MessageOutlined, BellOutlined, RobotOutlined } from '@ant-design/icons';
 import SocialMediaDMHub from '../../components/engagement/SocialMediaDMHub';
 import SocialMediaMonitor from '../../components/engagement/SocialMediaMonitor';
+import AutoReplyRulesManager from '../../components/engagement/AutoReplyRulesManager';
 
 const { Title } = Typography;
 
 const EngagementPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dms');
+  const [isAutoReplyVisible, setIsAutoReplyVisible] = useState(false);
 
   return (
     <div>
       <Card>
-        <Title level={2} style={{ marginBottom: 24 }}>
-          Social Media Engagement
-        </Title>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+          <Title level={2} style={{ margin: 0 }}>
+            Social Media Engagement
+          </Title>
+          <Button
+            type="primary"
+            icon={<RobotOutlined />}
+            onClick={() => setIsAutoReplyVisible(true)}
+          >
+            Auto-Reply Rules
+          </Button>
+        </div>
 
         <Tabs
           activeKey={activeTab}
@@ -44,6 +55,11 @@ const EngagementPage: React.FC = () => {
           ]}
         />
       </Card>
+
+      <AutoReplyRulesManager
+        visible={isAutoReplyVisible}
+        onClose={() => setIsAutoReplyVisible(false)}
+      />
     </div>
   );
 };
