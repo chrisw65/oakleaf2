@@ -132,20 +132,24 @@ export interface FunnelAnalytics {
 
 export interface CreateFunnelDto {
   name: string;
+  slug: string;
   description?: string;
-  subdomain?: string;
-  domain?: string;
+  type?: string;
+  customDomain?: string;
+  settings?: Record<string, any>;
+  theme?: Record<string, any>;
 }
 
 export interface UpdateFunnelDto {
   name?: string;
+  slug?: string;
   description?: string;
   status?: FunnelStatus;
-  subdomain?: string;
-  domain?: string;
-  trackingCode?: string;
-  pixelCode?: string;
-  gaCode?: string;
+  type?: string;
+  customDomain?: string;
+  favicon?: string;
+  settings?: Record<string, any>;
+  theme?: Record<string, any>;
 }
 
 export interface CreatePageDto {

@@ -179,7 +179,7 @@ class CrmService {
   }
 
   async updateContact(id: string, data: UpdateContactDto): Promise<Contact> {
-    return apiService.patch(`/crm/contacts/${id}`, data);
+    return apiService.put(`/crm/contacts/${id}`, data);
   }
 
   async deleteContact(id: string): Promise<void> {
@@ -222,7 +222,7 @@ class CrmService {
   }
 
   async updateOpportunity(id: string, data: UpdateOpportunityDto): Promise<Opportunity> {
-    return apiService.patch(`/crm/opportunities/${id}`, data);
+    return apiService.put(`/crm/opportunities/${id}`, data);
   }
 
   async deleteOpportunity(id: string): Promise<void> {
@@ -230,7 +230,7 @@ class CrmService {
   }
 
   async moveOpportunity(id: string, stageId: string): Promise<Opportunity> {
-    return apiService.patch(`/crm/opportunities/${id}/move`, { stageId });
+    return apiService.put(`/crm/opportunities/${id}/move`, { stageId });
   }
 
   // PIPELINES
@@ -247,7 +247,7 @@ class CrmService {
   }
 
   async updatePipeline(id: string, data: UpdatePipelineDto): Promise<Pipeline> {
-    return apiService.patch(`/crm/pipelines/${id}`, data);
+    return apiService.put(`/crm/pipelines/${id}`, data);
   }
 
   async deletePipeline(id: string): Promise<void> {
@@ -259,7 +259,7 @@ class CrmService {
   }
 
   async updateStage(pipelineId: string, stageId: string, data: { name?: string; probability?: number; color?: string }): Promise<Pipeline> {
-    return apiService.patch(`/crm/pipelines/${pipelineId}/stages/${stageId}`, data);
+    return apiService.put(`/crm/pipelines/${pipelineId}/stages/${stageId}`, data);
   }
 
   async deleteStage(pipelineId: string, stageId: string): Promise<Pipeline> {
