@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AIService } from './ai.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -29,8 +29,9 @@ export class AIController {
   @ApiResponse({ status: 200, description: 'Subject lines generated', type: SubjectLinesResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'OpenAI service not configured or error occurred' })
-  async generateSubjectLines(@Body() dto: GenerateSubjectLinesDto): Promise<SubjectLinesResponseDto> {
-    const subjectLines = await this.aiService.generateEmailSubjectLines(dto);
+  async generateSubjectLines(@Request() req: any, @Body() dto: GenerateSubjectLinesDto): Promise<SubjectLinesResponseDto> {
+    const tenantId = req.user.tenantId;
+    const subjectLines = await this.aiService.generateEmailSubjectLines(tenantId, dto);
     return { subjectLines };
   }
 
@@ -39,8 +40,9 @@ export class AIController {
   @ApiResponse({ status: 200, description: 'Email body generated', type: EmailBodyResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'OpenAI service not configured or error occurred' })
-  async generateEmailBody(@Body() dto: GenerateEmailBodyDto): Promise<EmailBodyResponseDto> {
-    const body = await this.aiService.generateEmailBody(dto);
+  async generateEmailBody(@Request() req: any, @Body() dto: GenerateEmailBodyDto): Promise<EmailBodyResponseDto> {
+    const tenantId = req.user.tenantId;
+    const body = await this.aiService.generateEmailBody(tenantId, dto);
     return { body };
   }
 
@@ -49,8 +51,9 @@ export class AIController {
   @ApiResponse({ status: 200, description: 'Social posts generated', type: SocialPostsResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'OpenAI service not configured or error occurred' })
-  async generateSocialPost(@Body() dto: GenerateSocialPostDto): Promise<SocialPostsResponseDto> {
-    const posts = await this.aiService.generateSocialPost(dto);
+  async generateSocialPost(@Request() req: any, @Body() dto: GenerateSocialPostDto): Promise<SocialPostsResponseDto> {
+    const tenantId = req.user.tenantId;
+    const posts = await this.aiService.generateSocialPost(tenantId, dto);
     return { posts };
   }
 
@@ -59,8 +62,9 @@ export class AIController {
   @ApiResponse({ status: 200, description: 'AI response generated', type: ChatResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'OpenAI service not configured or error occurred' })
-  async chat(@Body() dto: ChatMessageDto): Promise<ChatResponseDto> {
-    const response = await this.aiService.chat(dto);
+  async chat(@Request() req: any, @Body() dto: ChatMessageDto): Promise<ChatResponseDto> {
+    const tenantId = req.user.tenantId;
+    const response = await this.aiService.chat(tenantId, dto);
     return { response };
   }
 
@@ -69,8 +73,9 @@ export class AIController {
   @ApiResponse({ status: 200, description: 'Page copy generated', type: PageCopyResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'OpenAI service not configured or error occurred' })
-  async generatePageCopy(@Body() dto: GeneratePageCopyDto): Promise<PageCopyResponseDto> {
-    return await this.aiService.generatePageCopy(dto);
+  async generatePageCopy(@Request() req: any, @Body() dto: GeneratePageCopyDto): Promise<PageCopyResponseDto> {
+    const tenantId = req.user.tenantId;
+    return await this.aiService.generatePageCopy(tenantId, dto);
   }
 
   @Post('email/analyze')
@@ -78,7 +83,8 @@ export class AIController {
   @ApiResponse({ status: 200, description: 'Email analyzed', type: EmailAnalysisResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'OpenAI service not configured or error occurred' })
-  async analyzeEmail(@Body() dto: AnalyzeEmailDto): Promise<EmailAnalysisResponseDto> {
-    return await this.aiService.analyzeEmail(dto);
+  async analyzeEmail(@Request() req: any, @Body() dto: AnalyzeEmailDto): Promise<EmailAnalysisResponseDto> {
+    const tenantId = req.user.tenantId;
+    return await this.aiService.analyzeEmail(tenantId, dto);
   }
 }

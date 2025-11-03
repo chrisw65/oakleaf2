@@ -29,6 +29,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { ABTestingModule } from './modules/ab-testing/ab-testing.module';
 import { EmailTemplateModule } from './modules/email-template/email-template.module';
 import { EmailAutomationModule } from './modules/email-automation/email-automation.module';
+import { SettingsModule } from './modules/settings/settings.module';
 import { AIModule } from './modules/ai/ai.module';
 import { CacheModule } from './common/cache/cache.module';
 import { QueueModule } from './common/queue/queue.module';
@@ -74,6 +75,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     ABTestingModule,
     EmailTemplateModule,
     EmailAutomationModule,
+    SettingsModule,
     AIModule,
 
     // Feature Modules

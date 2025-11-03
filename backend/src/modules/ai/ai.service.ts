@@ -1,41 +1,51 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Logger, Inject, forwardRef } from '@nestjs/common';
 import OpenAI from 'openai';
+import { SettingsService } from '../settings/settings.service';
+import { SettingKey } from '../settings/settings.entity';
 
 @Injectable()
 export class AIService {
   private readonly logger = new Logger(AIService.name);
-  private openai: OpenAI;
 
-  constructor(private configService: ConfigService) {
-    const apiKey = this.configService.get<string>('OPENAI_API_KEY');
+  constructor(
+    @Inject(forwardRef(() => SettingsService))
+    private readonly settingsService: SettingsService,
+  ) {
+    this.logger.log('AI service initialized');
+  }
 
-    if (!apiKey) {
-      this.logger.warn('OPENAI_API_KEY not configured. AI features will be disabled.');
-      return;
+  /**
+   * Get OpenAI client for a specific tenant using their API key from settings
+   */
+  private async getOpenAIClient(tenantId: string): Promise<OpenAI> {
+    const apiKey = await this.settingsService.get(tenantId, SettingKey.OPENAI_API_KEY);
+    const isEnabled = await this.settingsService.isEnabled(tenantId, SettingKey.OPENAI_ENABLED);
+
+    if (!isEnabled) {
+      throw new Error('AI features are disabled. Please enable them in Settings.');
     }
 
-    this.openai = new OpenAI({
-      apiKey: apiKey,
-    });
+    if (!apiKey) {
+      throw new Error('OpenAI API key not configured. Please configure it in Settings > AI Configuration.');
+    }
 
-    this.logger.log('OpenAI service initialized successfully');
+    return new OpenAI({ apiKey });
   }
 
   /**
    * Generate email subject lines using AI
    */
-  async generateEmailSubjectLines(params: {
-    product?: string;
-    audience?: string;
-    goal?: string;
-    tone?: string;
-    count?: number;
-  }): Promise<string[]> {
-    if (!this.openai) {
-      throw new Error('OpenAI service not initialized. Please configure OPENAI_API_KEY.');
-    }
-
+  async generateEmailSubjectLines(
+    tenantId: string,
+    params: {
+      product?: string;
+      audience?: string;
+      goal?: string;
+      tone?: string;
+      count?: number;
+    },
+  ): Promise<string[]> {
+    const openai = await this.getOpenAIClient(tenantId);
     const { product, audience, goal, tone = 'professional', count = 3 } = params;
 
     const prompt = `Generate ${count} compelling email subject lines with the following criteria:
@@ -54,7 +64,7 @@ Requirements:
 Return ONLY the subject lines, one per line, without numbering or extra formatting.`;
 
     try {
-      const completion = await this.openai.chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
           {
@@ -85,17 +95,17 @@ Return ONLY the subject lines, one per line, without numbering or extra formatti
   /**
    * Generate email body copy using AI
    */
-  async generateEmailBody(params: {
-    product?: string;
-    audience?: string;
-    goal?: string;
-    tone?: string;
-    benefit?: string;
-  }): Promise<string> {
-    if (!this.openai) {
-      throw new Error('OpenAI service not initialized. Please configure OPENAI_API_KEY.');
-    }
-
+  async generateEmailBody(
+    tenantId: string,
+    params: {
+      product?: string;
+      audience?: string;
+      goal?: string;
+      tone?: string;
+      benefit?: string;
+    },
+  ): Promise<string> {
+    const openai = await this.getOpenAIClient(tenantId);
     const { product, audience, goal, tone = 'professional', benefit } = params;
 
     const prompt = `Write a compelling email body with the following criteria:
@@ -118,7 +128,7 @@ Requirements:
 Return the email body ready to use.`;
 
     try {
-      const completion = await this.openai.chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
           {
@@ -144,18 +154,18 @@ Return the email body ready to use.`;
   /**
    * Generate social media post using AI
    */
-  async generateSocialPost(params: {
-    platform: 'twitter' | 'linkedin' | 'facebook' | 'instagram';
-    topic: string;
-    message?: string;
-    tone?: string;
-    hashtags?: string[];
-    goal?: string;
-  }): Promise<string[]> {
-    if (!this.openai) {
-      throw new Error('OpenAI service not initialized. Please configure OPENAI_API_KEY.');
-    }
-
+  async generateSocialPost(
+    tenantId: string,
+    params: {
+      platform: 'twitter' | 'linkedin' | 'facebook' | 'instagram';
+      topic: string;
+      message?: string;
+      tone?: string;
+      hashtags?: string[];
+      goal?: string;
+    },
+  ): Promise<string[]> {
+    const openai = await this.getOpenAIClient(tenantId);
     const { platform, topic, message, tone = 'professional', hashtags = [], goal } = params;
 
     const platformGuidelines = {
@@ -176,7 +186,7 @@ Platform guidelines: ${platformGuidelines[platform]}
 Return 3 different variations, each on a new line, separated by "---"`;
 
     try {
-      const completion = await this.openai.chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
           {
@@ -208,18 +218,18 @@ Return 3 different variations, each on a new line, separated by "---"`;
   /**
    * AI Marketing Assistant Chatbot
    */
-  async chat(params: {
-    message: string;
-    conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>;
-    context?: {
-      userStats?: any;
-      recentCampaigns?: any[];
-    };
-  }): Promise<string> {
-    if (!this.openai) {
-      throw new Error('OpenAI service not initialized. Please configure OPENAI_API_KEY.');
-    }
-
+  async chat(
+    tenantId: string,
+    params: {
+      message: string;
+      conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>;
+      context?: {
+        userStats?: any;
+        recentCampaigns?: any[];
+      };
+    },
+  ): Promise<string> {
+    const openai = await this.getOpenAIClient(tenantId);
     const { message, conversationHistory = [], context } = params;
 
     const systemPrompt = `You are an AI Marketing Assistant for a funnel builder and email marketing platform. You help users with:
@@ -247,7 +257,7 @@ Be conversational, helpful, and specific. Provide actionable recommendations wit
         { role: 'user', content: message },
       ];
 
-      const completion = await this.openai.chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: messages,
         temperature: 0.7,
@@ -264,23 +274,23 @@ Be conversational, helpful, and specific. Provide actionable recommendations wit
   /**
    * Generate page copy for funnel builder
    */
-  async generatePageCopy(params: {
-    pageType: 'landing' | 'sales' | 'checkout' | 'thank-you' | 'webinar';
-    product: string;
-    targetAudience: string;
-    valueProposition?: string;
-    features?: string[];
-    tone?: string;
-  }): Promise<{
+  async generatePageCopy(
+    tenantId: string,
+    params: {
+      pageType: 'landing' | 'sales' | 'checkout' | 'thank-you' | 'webinar';
+      product: string;
+      targetAudience: string;
+      valueProposition?: string;
+      features?: string[];
+      tone?: string;
+    },
+  ): Promise<{
     headline: string;
     subheadline: string;
     body: string;
     cta: string;
   }> {
-    if (!this.openai) {
-      throw new Error('OpenAI service not initialized. Please configure OPENAI_API_KEY.');
-    }
-
+    const openai = await this.getOpenAIClient(tenantId);
     const { pageType, product, targetAudience, valueProposition, features = [], tone = 'professional' } = params;
 
     const prompt = `Generate compelling copy for a ${pageType} page:
@@ -306,7 +316,7 @@ Format your response as JSON:
 }`;
 
     try {
-      const completion = await this.openai.chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
           {
@@ -334,10 +344,13 @@ Format your response as JSON:
   /**
    * Analyze and score email content
    */
-  async analyzeEmail(params: {
-    subjectLine?: string;
-    body?: string;
-  }): Promise<{
+  async analyzeEmail(
+    tenantId: string,
+    params: {
+      subjectLine?: string;
+      body?: string;
+    },
+  ): Promise<{
     subjectLineScore?: number;
     subjectLineFeedback?: string[];
     bodyScore?: number;
@@ -345,10 +358,7 @@ Format your response as JSON:
     overallScore?: number;
     recommendations?: string[];
   }> {
-    if (!this.openai) {
-      throw new Error('OpenAI service not initialized. Please configure OPENAI_API_KEY.');
-    }
-
+    const openai = await this.getOpenAIClient(tenantId);
     const { subjectLine, body } = params;
 
     const prompt = `Analyze this email and provide detailed scoring and recommendations:
@@ -378,7 +388,7 @@ Format as JSON:
 }`;
 
     try {
-      const completion = await this.openai.chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
           {

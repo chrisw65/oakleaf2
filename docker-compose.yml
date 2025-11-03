@@ -62,8 +62,8 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:-your-refresh-token-secret}
       REFRESH_TOKEN_EXPIRES_IN: ${REFRESH_TOKEN_EXPIRES_IN:-7d}
-      # OpenAI
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      # Settings Encryption (32 characters for AES-256)
+      SETTINGS_ENCRYPTION_KEY: ${SETTINGS_ENCRYPTION_KEY:-change-this-32-char-key-prod!!}
     ports:
       - "3001:3001"
     depends_on:
