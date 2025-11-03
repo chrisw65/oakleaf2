@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Layout, Menu, Avatar, Dropdown, Typography, theme, Badge, Space } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Layout, Menu, Avatar, Dropdown, Typography, theme, Badge, Space, Button, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   DashboardOutlined,
@@ -16,21 +16,39 @@ import {
   DollarOutlined,
   AuditOutlined,
   BellOutlined,
+  SearchOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import CommandPalette from '../common/CommandPalette';
+import NotificationBell from '../common/NotificationBell';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
 
 const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [commandPaletteVisible, setCommandPaletteVisible] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  // Command Palette keyboard shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd+K or Ctrl+K
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setCommandPaletteVisible(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const menuItems: MenuProps['items'] = [
     {
@@ -73,6 +91,11 @@ const MainLayout: React.FC = () => {
       key: '/funnels',
       icon: <FunnelPlotOutlined />,
       label: 'Funnels',
+    },
+    {
+      key: '/engagement',
+      icon: <BellOutlined />,
+      label: 'Engagement',
     },
     {
       key: '/affiliates',
@@ -261,28 +284,31 @@ const MainLayout: React.FC = () => {
             boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
           }}
         >
-          {/* Search & Breadcrumb Area (can be expanded later) */}
-          <div style={{ flex: 1 }} />
+          {/* Search & Command Palette */}
+          <Tooltip title="Press ⌘K or Ctrl+K to search">
+            <Button
+              size="large"
+              icon={<SearchOutlined />}
+              onClick={() => setCommandPaletteVisible(true)}
+              style={{
+                width: 240,
+                textAlign: 'left',
+                borderRadius: 8,
+                backgroundColor: '#f8fafc',
+                border: '1px solid #e2e8f0',
+              }}
+            >
+              <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                <Text type="secondary" style={{ fontSize: 13 }}>Quick search...</Text>
+                <Text keyboard style={{ fontSize: 11, padding: '2px 6px' }}>⌘K</Text>
+              </Space>
+            </Button>
+          </Tooltip>
 
           {/* Right Actions */}
           <Space size="large">
             {/* Notifications */}
-            <Badge count={3} size="small">
-              <BellOutlined
-                style={{
-                  fontSize: 20,
-                  color: '#64748b',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#6366f1';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#64748b';
-                }}
-              />
-            </Badge>
+            <NotificationBell />
 
             {/* User Menu */}
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
@@ -370,6 +396,12 @@ const MainLayout: React.FC = () => {
           Funnel Pro Platform © {new Date().getFullYear()} - Built with precision
         </div>
       </Layout>
+
+      {/* Command Palette */}
+      <CommandPalette
+        visible={commandPaletteVisible}
+        onClose={() => setCommandPaletteVisible(false)}
+      />
     </Layout>
   );
 };

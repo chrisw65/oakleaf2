@@ -18,6 +18,7 @@ import OrdersPage from './pages/ecommerce/OrdersPage';
 import FunnelsPage from './pages/funnels/FunnelsPage';
 import FunnelBuilderPage from './pages/funnels/FunnelBuilderPage';
 import FunnelAnalyticsPage from './pages/funnels/FunnelAnalyticsPage';
+import EngagementPage from './pages/engagement/EngagementPage';
 import ComingSoon from './components/common/ComingSoon';
 
 const App: React.FC = () => {
@@ -133,6 +134,9 @@ const App: React.FC = () => {
               <Route path="funnels" element={<FunnelsPage />} />
               <Route path="funnels/:funnelId/builder" element={<FunnelBuilderPage />} />
               <Route path="funnels/:funnelId/analytics" element={<FunnelAnalyticsPage />} />
+
+              {/* Engagement Routes */}
+              <Route path="engagement" element={<EngagementPage />} />
 
               {/* Affiliate Routes */}
               <Route path="affiliates" element={<ComingSoon title="Affiliates" description="Manage your affiliate program" />} />

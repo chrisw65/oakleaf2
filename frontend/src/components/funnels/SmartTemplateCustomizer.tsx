@@ -115,7 +115,7 @@ const SmartTemplateCustomizer: React.FC<SmartTemplateCustomizerProps> = ({
         pricing: 'Show full curriculum and bonus stack',
         social: 'Feature student success stories and results',
         tips: [
-          'Show what's inside with module breakdown',
+          'Show what\'s inside with module breakdown',
           'Add curriculum preview or sample lesson',
           'Emphasize exclusive community access',
           'Use earnings disclaimer if showing income',
@@ -208,7 +208,7 @@ const SmartTemplateCustomizer: React.FC<SmartTemplateCustomizerProps> = ({
             </Form.Item>
 
             <Form.Item
-              label="What's your average ticket price?"
+              label="What\'s your average ticket price?"
               name="pricePoint"
               rules={[{ required: true }]}
             >
@@ -260,19 +260,19 @@ const SmartTemplateCustomizer: React.FC<SmartTemplateCustomizerProps> = ({
             </Form.Item>
 
             <Form.Item
-              label="What's their biggest pain point?"
+              label="What\'s their biggest pain point?"
               name="painPoint"
               rules={[{ required: true, message: 'Describe their main problem' }]}
             >
               <TextArea
                 rows={3}
-                placeholder="e.g., They're struggling to generate consistent leads and spending too much time on manual tasks"
+                placeholder="e.g., They\'re struggling to generate consistent leads and spending too much time on manual tasks"
                 size="large"
               />
             </Form.Item>
 
             <Form.Item
-              label="What's their desired outcome?"
+              label="What\'s their desired outcome?"
               name="desiredOutcome"
               rules={[{ required: true }]}
             >
