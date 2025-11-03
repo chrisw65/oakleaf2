@@ -75,6 +75,11 @@ const MainLayout: React.FC = () => {
       label: 'Funnels',
     },
     {
+      key: '/engagement',
+      icon: <BellOutlined />,
+      label: 'Engagement',
+    },
+    {
       key: '/affiliates',
       icon: <DollarOutlined />,
       label: 'Affiliates',

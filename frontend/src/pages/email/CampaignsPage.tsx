@@ -23,9 +23,16 @@ import {
   MailOutlined,
   ClockCircleOutlined,
   PauseCircleOutlined,
+  RobotOutlined,
+  ThunderboltOutlined,
+  AppstoreOutlined,
+  MessageOutlined,
 } from '@ant-design/icons';
 import { EmailCampaign, CampaignStatus, emailService } from '../../services/emailService';
 import CampaignFormModal from '../../components/email/CampaignFormModal';
+import AIEmailMarketingCoach from '../../components/email/AIEmailMarketingCoach';
+import AdvancedEmailTemplateLibrary from '../../components/email/AdvancedEmailTemplateLibrary';
+import EmailAutomationBuilder from '../../components/email/EmailAutomationBuilder';
 import { format } from 'date-fns';
 
 const { Title } = Typography;
@@ -35,6 +42,9 @@ const CampaignsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<EmailCampaign | null>(null);
+  const [isAICoachVisible, setIsAICoachVisible] = useState(false);
+  const [isTemplateLibraryVisible, setIsTemplateLibraryVisible] = useState(false);
+  const [isAutomationBuilderVisible, setIsAutomationBuilderVisible] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -286,9 +296,30 @@ const CampaignsPage: React.FC = () => {
             <Title level={2} style={{ margin: 0 }}>
               Email Campaigns
             </Title>
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateCampaign}>
-              Create Campaign
-            </Button>
+            <Space>
+              <Button
+                icon={<RobotOutlined />}
+                onClick={() => setIsAICoachVisible(true)}
+                style={{ borderColor: '#6366f1', color: '#6366f1' }}
+              >
+                AI Coach
+              </Button>
+              <Button
+                icon={<AppstoreOutlined />}
+                onClick={() => setIsTemplateLibraryVisible(true)}
+              >
+                Templates
+              </Button>
+              <Button
+                icon={<ThunderboltOutlined />}
+                onClick={() => setIsAutomationBuilderVisible(true)}
+              >
+                Automations
+              </Button>
+              <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateCampaign}>
+                Create Campaign
+              </Button>
+            </Space>
           </div>
 
           <Table
@@ -314,6 +345,25 @@ const CampaignsPage: React.FC = () => {
           setEditingCampaign(null);
           fetchCampaigns();
         }}
+      />
+
+      <AIEmailMarketingCoach
+        visible={isAICoachVisible}
+        onClose={() => setIsAICoachVisible(false)}
+      />
+
+      <AdvancedEmailTemplateLibrary
+        visible={isTemplateLibraryVisible}
+        onClose={() => setIsTemplateLibraryVisible(false)}
+        onSelectTemplate={(templateId) => {
+          message.success(`Template ${templateId} loaded!`);
+          setIsTemplateLibraryVisible(false);
+        }}
+      />
+
+      <EmailAutomationBuilder
+        visible={isAutomationBuilderVisible}
+        onClose={() => setIsAutomationBuilderVisible(false)}
       />
     </div>
   );
