@@ -171,6 +171,8 @@ const FunnelAnalyticsPage: React.FC = () => {
 
   const funnelChartConfig = {
     data: funnelData,
+    xField: 'stage',
+    yField: 'value',
     height: 400,
     legend: false,
     label: {
