@@ -141,8 +141,15 @@ const FunnelAnalyticsPage: React.FC = () => {
     },
   ];
 
+  // Transform chart data for multiple series BEFORE config
+  const chartData = analytics?.chartData.flatMap((item) => [
+    { date: item.date, value: item.views, type: 'Views' },
+    { date: item.date, value: item.conversions, type: 'Conversions' },
+    { date: item.date, value: item.revenue, type: 'Revenue' },
+  ]) || [];
+
   const lineChartConfig = {
-    data: analytics?.chartData || [],
+    data: chartData,
     xField: 'date',
     yField: 'value',
     seriesField: 'type',
@@ -155,13 +162,6 @@ const FunnelAnalyticsPage: React.FC = () => {
       },
     },
   };
-
-  // Transform chart data for multiple series
-  const chartData = analytics?.chartData.flatMap((item) => [
-    { date: item.date, value: item.views, type: 'Views' },
-    { date: item.date, value: item.conversions, type: 'Conversions' },
-    { date: item.date, value: item.revenue, type: 'Revenue' },
-  ]) || [];
 
   // Funnel visualization data
   const funnelData = analytics?.steps.map((step) => ({
@@ -288,7 +288,7 @@ const FunnelAnalyticsPage: React.FC = () => {
 
       {/* Performance Chart */}
       <Card title="Performance Over Time" style={{ marginBottom: 16 }}>
-        <Line {...lineChartConfig} data={chartData} />
+        <Line {...lineChartConfig} />
       </Card>
 
       {/* Funnel Visualization */}
