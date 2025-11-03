@@ -1,0 +1,366 @@
+import React, { useState } from 'react';
+import { Modal, Card, Row, Col, Input, Select, Tag, Button, Typography, Space, Badge } from 'antd';
+import {
+  SearchOutlined,
+  ThunderboltOutlined,
+  ShoppingOutlined,
+  VideoCameraOutlined,
+  TeamOutlined,
+  BookOutlined,
+  RocketOutlined,
+  CrownOutlined,
+} from '@ant-design/icons';
+
+const { Title, Text, Paragraph } = Typography;
+
+interface FunnelTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  icon: React.ReactNode;
+  thumbnail: string;
+  pages: number;
+  conversionRate: string;
+  isPremium?: boolean;
+  tags: string[];
+  previewUrl?: string;
+}
+
+interface FunnelTemplateLibraryProps {
+  visible: boolean;
+  onCancel: () => void;
+  onSelectTemplate: (templateId: string) => void;
+}
+
+const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
+  visible,
+  onCancel,
+  onSelectTemplate,
+}) => {
+  const [searchText, setSearchText] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  const categories = [
+    { value: 'all', label: 'All Templates', icon: <ThunderboltOutlined /> },
+    { value: 'lead-gen', label: 'Lead Generation', icon: <TeamOutlined /> },
+    { value: 'ecommerce', label: 'E-Commerce', icon: <ShoppingOutlined /> },
+    { value: 'webinar', label: 'Webinar', icon: <VideoCameraOutlined /> },
+    { value: 'course', label: 'Online Course', icon: <BookOutlined /> },
+    { value: 'product-launch', label: 'Product Launch', icon: <RocketOutlined /> },
+  ];
+
+  const templates: FunnelTemplate[] = [
+    {
+      id: 'lead-magnet-pro',
+      name: 'Lead Magnet Pro',
+      description: 'High-converting lead capture funnel with thank you page and email sequence integration',
+      category: 'lead-gen',
+      icon: <TeamOutlined />,
+      thumbnail: '/templates/lead-magnet.jpg',
+      pages: 3,
+      conversionRate: '42%',
+      isPremium: true,
+      tags: ['Lead Capture', 'Email Marketing', 'High-Converting'],
+    },
+    {
+      id: 'tripwire-funnel',
+      name: 'Tripwire Sales Funnel',
+      description: 'Low-ticket offer funnel with upsell and downsell sequence for maximum revenue',
+      category: 'ecommerce',
+      icon: <ShoppingOutlined />,
+      thumbnail: '/templates/tripwire.jpg',
+      pages: 5,
+      conversionRate: '38%',
+      tags: ['Sales', 'Upsell', 'Revenue Optimizer'],
+    },
+    {
+      id: 'webinar-registration',
+      name: 'Webinar Registration',
+      description: 'Complete webinar funnel with registration, reminder emails, and replay sequence',
+      category: 'webinar',
+      icon: <VideoCameraOutlined />,
+      thumbnail: '/templates/webinar.jpg',
+      pages: 4,
+      conversionRate: '45%',
+      isPremium: true,
+      tags: ['Webinar', 'Live Event', 'Automated'],
+    },
+    {
+      id: 'product-launch',
+      name: 'Product Launch Blueprint',
+      description: 'Jeff Walker style product launch with video series and cart open/close automation',
+      category: 'product-launch',
+      icon: <RocketOutlined />,
+      thumbnail: '/templates/product-launch.jpg',
+      pages: 8,
+      conversionRate: '52%',
+      isPremium: true,
+      tags: ['Launch', 'Scarcity', 'Video Series'],
+    },
+    {
+      id: 'course-enrollment',
+      name: 'Course Enrollment',
+      description: 'Educational course funnel with payment plans and member area access',
+      category: 'course',
+      icon: <BookOutlined />,
+      thumbnail: '/templates/course.jpg',
+      pages: 4,
+      conversionRate: '35%',
+      tags: ['Education', 'Membership', 'Payment Plans'],
+    },
+    {
+      id: 'simple-optin',
+      name: 'Simple Opt-in',
+      description: 'Clean and minimal opt-in page for building your email list fast',
+      category: 'lead-gen',
+      icon: <TeamOutlined />,
+      thumbnail: '/templates/simple-optin.jpg',
+      pages: 2,
+      conversionRate: '48%',
+      tags: ['Quick Setup', 'Minimal', 'Email List'],
+    },
+    {
+      id: 'challenge-funnel',
+      name: '5-Day Challenge',
+      description: 'Multi-day challenge funnel with daily content delivery and conversion event',
+      category: 'lead-gen',
+      icon: <ThunderboltOutlined />,
+      thumbnail: '/templates/challenge.jpg',
+      pages: 6,
+      conversionRate: '41%',
+      isPremium: true,
+      tags: ['Challenge', 'Engagement', 'Community'],
+    },
+    {
+      id: 'vsl-funnel',
+      name: 'Video Sales Letter',
+      description: 'Long-form video sales letter with order form and one-time offers',
+      category: 'ecommerce',
+      icon: <VideoCameraOutlined />,
+      thumbnail: '/templates/vsl.jpg',
+      pages: 3,
+      conversionRate: '44%',
+      tags: ['VSL', 'Long-Form', 'Direct Response'],
+    },
+    {
+      id: 'application-funnel',
+      name: 'Application Funnel',
+      description: 'High-ticket application funnel with qualification questions and booking',
+      category: 'lead-gen',
+      icon: <CrownOutlined />,
+      thumbnail: '/templates/application.jpg',
+      pages: 4,
+      conversionRate: '28%',
+      isPremium: true,
+      tags: ['High-Ticket', 'Qualification', 'Booking'],
+    },
+    {
+      id: 'survey-funnel',
+      name: 'Survey Funnel',
+      description: 'Interactive survey funnel that segments leads and personalizes offers',
+      category: 'lead-gen',
+      icon: <ThunderboltOutlined />,
+      thumbnail: '/templates/survey.jpg',
+      pages: 4,
+      conversionRate: '39%',
+      tags: ['Segmentation', 'Personalization', 'Interactive'],
+    },
+    {
+      id: 'summit-funnel',
+      name: 'Virtual Summit',
+      description: 'Multi-speaker virtual summit with registration and all-access pass upsell',
+      category: 'webinar',
+      icon: <VideoCameraOutlined />,
+      thumbnail: '/templates/summit.jpg',
+      pages: 5,
+      conversionRate: '36%',
+      isPremium: true,
+      tags: ['Summit', 'Multi-Speaker', 'All-Access'],
+    },
+    {
+      id: 'book-funnel',
+      name: 'Free Book Funnel',
+      description: 'Give away physical book, customer pays shipping, with order bump and upsells',
+      category: 'ecommerce',
+      icon: <BookOutlined />,
+      thumbnail: '/templates/book.jpg',
+      pages: 4,
+      conversionRate: '47%',
+      tags: ['Free+Shipping', 'Physical Product', 'Order Bump'],
+    },
+  ];
+
+  const filteredTemplates = templates.filter((template) => {
+    const matchesSearch =
+      template.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      template.description.toLowerCase().includes(searchText.toLowerCase()) ||
+      template.tags.some((tag) => tag.toLowerCase().includes(searchText.toLowerCase()));
+
+    const matchesCategory =
+      selectedCategory === 'all' || template.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  return (
+    <Modal
+      title={
+        <div>
+          <Title level={3} style={{ marginBottom: 8 }}>
+            <ThunderboltOutlined style={{ marginRight: 8, color: '#6366f1' }} />
+            Funnel Template Library
+          </Title>
+          <Text type="secondary">
+            Start with proven templates that convert. All templates are fully customizable.
+          </Text>
+        </div>
+      }
+      open={visible}
+      onCancel={onCancel}
+      footer={null}
+      width={1200}
+      bodyStyle={{ padding: '24px', maxHeight: '70vh', overflowY: 'auto' }}
+    >
+      <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        {/* Search and Filters */}
+        <Row gutter={16}>
+          <Col xs={24} md={12}>
+            <Input
+              size="large"
+              placeholder="Search templates..."
+              prefix={<SearchOutlined />}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              allowClear
+            />
+          </Col>
+          <Col xs={24} md={12}>
+            <Select
+              size="large"
+              style={{ width: '100%' }}
+              value={selectedCategory}
+              onChange={setSelectedCategory}
+            >
+              {categories.map((cat) => (
+                <Select.Option key={cat.value} value={cat.value}>
+                  {cat.icon} {cat.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+        </Row>
+
+        {/* Template Grid */}
+        <Row gutter={[16, 16]}>
+          {filteredTemplates.map((template) => (
+            <Col xs={24} sm={12} lg={8} key={template.id}>
+              <Badge.Ribbon
+                text="Premium"
+                color="#6366f1"
+                style={{ display: template.isPremium ? 'block' : 'none' }}
+              >
+                <Card
+                  hoverable
+                  cover={
+                    <div
+                      style={{
+                        height: 180,
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 48,
+                        color: 'white',
+                      }}
+                    >
+                      {template.icon}
+                    </div>
+                  }
+                  actions={[
+                    <Button
+                      type="primary"
+                      block
+                      onClick={() => onSelectTemplate(template.id)}
+                      style={{ margin: '0 16px' }}
+                    >
+                      Use Template
+                    </Button>,
+                  ]}
+                >
+                  <Card.Meta
+                    title={
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>{template.name}</span>
+                        {template.isPremium && (
+                          <CrownOutlined style={{ color: '#f59e0b', fontSize: 16 }} />
+                        )}
+                      </div>
+                    }
+                    description={
+                      <Space direction="vertical" size="small" style={{ width: '100%' }}>
+                        <Paragraph
+                          ellipsis={{ rows: 2 }}
+                          style={{ marginBottom: 12, color: '#64748b' }}
+                        >
+                          {template.description}
+                        </Paragraph>
+
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            marginBottom: 12,
+                          }}
+                        >
+                          <Text type="secondary" style={{ fontSize: 12 }}>
+                            {template.pages} Pages
+                          </Text>
+                          <Tag color="success">Avg CVR: {template.conversionRate}</Tag>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                          {template.tags.slice(0, 3).map((tag) => (
+                            <Tag key={tag} color="blue" style={{ fontSize: 11, margin: 0 }}>
+                              {tag}
+                            </Tag>
+                          ))}
+                        </div>
+                      </Space>
+                    }
+                  />
+                </Card>
+              </Badge.Ribbon>
+            </Col>
+          ))}
+        </Row>
+
+        {filteredTemplates.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '48px 0' }}>
+            <Text type="secondary">No templates found matching your criteria.</Text>
+          </div>
+        )}
+
+        {/* Bottom Info */}
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '24px',
+            background: '#f8fafc',
+            borderRadius: 8,
+            marginTop: 24,
+          }}
+        >
+          <ThunderboltOutlined style={{ fontSize: 32, color: '#6366f1', marginBottom: 12 }} />
+          <Title level={5}>Can't find what you need?</Title>
+          <Text type="secondary">
+            Start with a blank funnel and build exactly what you want using our drag-and-drop
+            builder.
+          </Text>
+        </div>
+      </Space>
+    </Modal>
+  );
+};
+
+export default FunnelTemplateLibrary;

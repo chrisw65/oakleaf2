@@ -25,7 +25,7 @@ import { CustomField } from '../contact.entity';
 import { CreateCustomFieldDto, UpdateCustomFieldDto } from '../dto/custom-field.dto';
 
 @ApiTags('Custom Fields')
-@Controller('custom-fields')
+@Controller('crm/custom-fields')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class CustomFieldController {

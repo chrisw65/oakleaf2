@@ -27,7 +27,7 @@ import {
 @ApiTags('Segments')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('segments')
+@Controller('email/segments')
 export class SegmentController {
   constructor(private readonly segmentService: SegmentService) {}
 

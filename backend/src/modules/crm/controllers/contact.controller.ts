@@ -32,7 +32,7 @@ import {
 } from '../dto/contact.dto';
 
 @ApiTags('Contacts')
-@Controller('contacts')
+@Controller('crm/contacts')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class ContactController {

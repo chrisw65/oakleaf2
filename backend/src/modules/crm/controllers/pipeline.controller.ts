@@ -32,7 +32,7 @@ import {
 } from '../dto/pipeline.dto';
 
 @ApiTags('Pipelines')
-@Controller('pipelines')
+@Controller('crm/pipelines')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class PipelineController {

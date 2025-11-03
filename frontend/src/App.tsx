@@ -25,7 +25,73 @@ const App: React.FC = () => {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#667eea',
+          // Brand Colors - Premium gradient palette
+          colorPrimary: '#6366f1',
+          colorSuccess: '#10b981',
+          colorWarning: '#f59e0b',
+          colorError: '#ef4444',
+          colorInfo: '#3b82f6',
+          colorLink: '#6366f1',
+
+          // Typography
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          fontSize: 14,
+          fontSizeHeading1: 38,
+          fontSizeHeading2: 30,
+          fontSizeHeading3: 24,
+          fontSizeHeading4: 20,
+          fontSizeHeading5: 16,
+
+          // Spacing & Layout
+          borderRadius: 8,
+          borderRadiusLG: 12,
+          borderRadiusSM: 6,
+
+          // Shadows - Premium depth
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          boxShadowSecondary: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+
+          // Motion
+          motionDurationSlow: '0.3s',
+          motionDurationMid: '0.2s',
+          motionDurationFast: '0.1s',
+        },
+        components: {
+          Card: {
+            borderRadiusLG: 12,
+            boxShadowTertiary: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          },
+          Button: {
+            borderRadius: 8,
+            controlHeight: 40,
+            fontSizeLG: 16,
+            controlHeightLG: 48,
+          },
+          Input: {
+            borderRadius: 8,
+            controlHeight: 40,
+          },
+          Select: {
+            borderRadius: 8,
+            controlHeight: 40,
+          },
+          Table: {
+            borderRadius: 12,
+          },
+          Modal: {
+            borderRadiusLG: 12,
+          },
+          Layout: {
+            headerBg: '#ffffff',
+            siderBg: '#1e293b',
+            triggerBg: '#334155',
+          },
+          Menu: {
+            darkItemBg: '#1e293b',
+            darkItemSelectedBg: '#334155',
+            darkItemHoverBg: '#334155',
+            itemBorderRadius: 8,
+          },
         },
       }}
     >

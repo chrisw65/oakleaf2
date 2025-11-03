@@ -23,7 +23,7 @@ import { Tag } from '../contact.entity';
 import { CreateTagDto, UpdateTagDto } from '../dto/tag.dto';
 
 @ApiTags('Tags')
-@Controller('tags')
+@Controller('crm/tags')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class TagController {
