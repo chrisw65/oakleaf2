@@ -22,9 +22,11 @@ import {
   UserOutlined,
   MailOutlined,
   PhoneOutlined,
+  WarningOutlined,
 } from '@ant-design/icons';
 import { Contact, ContactStatus, crmService } from '../../services/crmService';
 import ContactFormModal from '../../components/crm/ContactFormModal';
+import ChurnPrediction from '../../components/ai/ChurnPrediction';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -36,6 +38,7 @@ const ContactsPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<ContactStatus | undefined>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
+  const [isChurnPredictionVisible, setIsChurnPredictionVisible] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -233,9 +236,18 @@ const ContactsPage: React.FC = () => {
             <Title level={2} style={{ margin: 0 }}>
               Contacts
             </Title>
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateContact}>
-              Add Contact
-            </Button>
+            <Space>
+              <Button
+                icon={<WarningOutlined />}
+                onClick={() => setIsChurnPredictionVisible(true)}
+                style={{ borderColor: '#ef4444', color: '#ef4444' }}
+              >
+                Churn Prediction
+              </Button>
+              <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateContact}>
+                Add Contact
+              </Button>
+            </Space>
           </div>
 
           <Space style={{ width: '100%' }} size="middle">
@@ -280,6 +292,14 @@ const ContactsPage: React.FC = () => {
           setEditingContact(null);
         }}
         onSuccess={handleModalSuccess}
+      />
+
+      <ChurnPrediction
+        visible={isChurnPredictionVisible}
+        onClose={() => setIsChurnPredictionVisible(false)}
+        onTakeAction={(contactId, action) => {
+          message.success(`Action "${action}" taken for contact ${contactId}`);
+        }}
       />
     </div>
   );
