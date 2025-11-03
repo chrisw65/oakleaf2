@@ -166,17 +166,15 @@ const FunnelAnalyticsPage: React.FC = () => {
   // Funnel visualization data
   const funnelData = analytics?.steps.map((step) => ({
     stage: step.name,
-    number: step.views,
+    value: step.views,
   })) || [];
 
   const funnelChartConfig = {
     data: funnelData,
-    xField: 'stage',
-    yField: 'number',
     height: 400,
     legend: false,
     label: {
-      formatter: (datum: any) => `${datum.number.toLocaleString()} views`,
+      formatter: (datum: any) => `${datum.value.toLocaleString()} views`,
     },
   };
 
