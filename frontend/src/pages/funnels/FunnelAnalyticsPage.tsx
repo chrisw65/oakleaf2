@@ -176,7 +176,10 @@ const FunnelAnalyticsPage: React.FC = () => {
     height: 400,
     legend: false,
     label: {
-      formatter: (datum: any) => `${datum.value.toLocaleString()} views`,
+      formatter: (datum: any) => {
+        if (!datum || typeof datum.value === 'undefined') return '';
+        return `${datum.value.toLocaleString()} views`;
+      },
     },
   };
 
