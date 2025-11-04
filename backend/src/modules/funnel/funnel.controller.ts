@@ -36,8 +36,10 @@ export class FunnelController {
   async findAll(
     @CurrentUser() user: any,
     @Query('status') status?: FunnelStatus,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number,
   ) {
-    return this.funnelService.findAll(user.tenantId, status);
+    return this.funnelService.findAll(user.tenantId, status, page, pageSize);
   }
 
   @Get(':id')
