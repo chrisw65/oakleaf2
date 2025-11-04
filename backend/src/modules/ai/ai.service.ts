@@ -307,8 +307,8 @@ Be conversational, helpful, and specific. Provide actionable recommendations wit
         { role: 'user', content: message },
       ];
 
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+      const completion = await client.chat.completions.create({
+        model,
         messages: messages,
         temperature: 0.7,
         max_tokens: 1000,
