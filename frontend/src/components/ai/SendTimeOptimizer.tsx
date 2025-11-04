@@ -150,6 +150,9 @@ const SendTimeOptimizer: React.FC<SendTimeOptimizerProps> = ({
     },
     tooltip: {
       formatter: (datum: any) => {
+        if (!datum || typeof datum.value === 'undefined') {
+          return { name: 'Engagement', value: 'N/A' };
+        }
         return {
           name: 'Engagement',
           value: `${datum.value}% open rate`,
@@ -168,7 +171,10 @@ const SendTimeOptimizer: React.FC<SendTimeOptimizerProps> = ({
     color: '#6366f1',
     label: {
       position: 'top' as const,
-      formatter: (datum: any) => `${datum.openRate}%`,
+      formatter: (datum: any) => {
+        if (!datum || typeof datum.openRate === 'undefined') return '';
+        return `${datum.openRate}%`;
+      },
       style: {
         fill: '#6b7280',
         fontSize: 11,
