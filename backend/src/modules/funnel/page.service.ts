@@ -38,6 +38,15 @@ export class PageService {
       createPageDto.position = lastPage ? lastPage.position + 1 : 0;
     }
 
+    // Provide default content structure if not provided
+    if (!createPageDto.content) {
+      createPageDto.content = {
+        components: [],
+        version: '1.0',
+        lastModified: new Date().toISOString(),
+      };
+    }
+
     const page = this.pageRepository.create({
       ...createPageDto,
       tenantId,
