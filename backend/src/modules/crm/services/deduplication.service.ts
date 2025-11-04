@@ -10,7 +10,7 @@ export interface DuplicateGroup {
   confidence: 'high' | 'medium' | 'low';
 }
 
-export interface MergeContactsDto {
+export class MergeContactsDto {
   primaryContactId: string;
   duplicateContactIds: string[];
   mergeStrategy?: {
@@ -175,14 +175,6 @@ export class DeduplicationService {
       if (!merged.state && duplicate.state) merged.state = duplicate.state;
       if (!merged.zipCode && duplicate.zipCode) merged.zipCode = duplicate.zipCode;
       if (!merged.country && duplicate.country) merged.country = duplicate.country;
-
-      // Merge custom fields
-      if (duplicate.customFields) {
-        merged.customFields = {
-          ...merged.customFields,
-          ...duplicate.customFields,
-        };
-      }
 
       // Merge tags
       if (mergeStrategy.keepAllTags !== false) {

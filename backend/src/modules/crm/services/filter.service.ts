@@ -13,7 +13,14 @@ export class CreateFilterDto {
   isDefault?: boolean;
 }
 
-export class UpdateFilterDto extends Partial<CreateFilterDto> {}
+export class UpdateFilterDto {
+  name?: string;
+  entityType?: string;
+  filterConfig?: FilterGroup;
+  isPublic?: boolean;
+  description?: string;
+  isDefault?: boolean;
+}
 
 @Injectable()
 export class FilterService {
@@ -151,7 +158,7 @@ export class FilterService {
    * Apply a single condition to query
    */
   private applyCondition(
-    qb: SelectQueryBuilder<Contact>,
+    qb: any,
     condition: FilterCondition,
     paramName: string,
   ): void {
