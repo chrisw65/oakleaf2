@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Card, Row, Col, Input, Select, Tag, Button, Typography, Space, Badge } from 'antd';
+import { Modal, Card, Row, Col, Input, Select, Tag, Button, Typography, Space, Badge, Divider, Statistic } from 'antd';
 import {
   SearchOutlined,
   ThunderboltOutlined,
@@ -9,6 +9,7 @@ import {
   BookOutlined,
   RocketOutlined,
   CrownOutlined,
+  EyeOutlined,
 } from '@ant-design/icons';
 
 const { Title, Text, Paragraph } = Typography;
@@ -40,6 +41,7 @@ const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
 }) => {
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [previewTemplate, setPreviewTemplate] = useState<FunnelTemplate | null>(null);
 
   const categories = [
     { value: 'all', label: 'All Templates', icon: <ThunderboltOutlined /> },
@@ -332,14 +334,22 @@ const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
                     </div>
                   }
                   actions={[
-                    <Button
-                      type="primary"
-                      block
-                      onClick={() => onSelectTemplate(template.id)}
-                      style={{ margin: '0 16px' }}
-                    >
-                      Use Template
-                    </Button>,
+                    <div style={{ display: 'flex', gap: 8, margin: '0 16px' }}>
+                      <Button
+                        icon={<EyeOutlined />}
+                        onClick={() => setPreviewTemplate(template)}
+                        style={{ flex: 1 }}
+                      >
+                        Preview
+                      </Button>
+                      <Button
+                        type="primary"
+                        onClick={() => onSelectTemplate(template.id)}
+                        style={{ flex: 1 }}
+                      >
+                        Use Template
+                      </Button>
+                    </div>,
                   ]}
                 >
                   <Card.Meta
@@ -415,6 +425,144 @@ const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
         </div>
       </Space>
     </Modal>
+
+      {/* Preview Modal */}
+      {previewTemplate && (
+        <Modal
+          title={
+            <div>
+              <Title level={4} style={{ marginBottom: 4 }}>
+                {previewTemplate.name}
+                {previewTemplate.isPremium && (
+                  <CrownOutlined style={{ color: '#f59e0b', fontSize: 18, marginLeft: 8 }} />
+                )}
+              </Title>
+              <Text type="secondary">{previewTemplate.category.replace('-', ' ').toUpperCase()}</Text>
+            </div>
+          }
+          open={true}
+          onCancel={() => setPreviewTemplate(null)}
+          width={900}
+          footer={[
+            <Button key="cancel" onClick={() => setPreviewTemplate(null)}>
+              Close
+            </Button>,
+            <Button
+              key="use"
+              type="primary"
+              onClick={() => {
+                onSelectTemplate(previewTemplate.id);
+                setPreviewTemplate(null);
+              }}
+            >
+              Use This Template
+            </Button>,
+          ]}
+        >
+          <Space direction="vertical" size="large" style={{ width: '100%' }}>
+            {/* Template Preview Visualization */}
+            <div
+              style={{
+                height: 300,
+                background: getCategoryGradient(previewTemplate.category),
+                borderRadius: 12,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 80,
+                color: 'white',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              {/* Background pattern */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  opacity: 0.1,
+                  backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.05) 10px, rgba(255,255,255,.05) 20px)',
+                }}
+              />
+              <div style={{ position: 'relative', zIndex: 1, textShadow: '0 4px 8px rgba(0,0,0,0.2)' }}>
+                {previewTemplate.icon}
+              </div>
+            </div>
+
+            {/* Stats Row */}
+            <Row gutter={16}>
+              <Col span={8}>
+                <Card size="small">
+                  <Statistic
+                    title="Funnel Pages"
+                    value={previewTemplate.pages}
+                    suffix="pages"
+                    valueStyle={{ color: '#6366f1' }}
+                  />
+                </Card>
+              </Col>
+              <Col span={8}>
+                <Card size="small">
+                  <Statistic
+                    title="Avg Conversion"
+                    value={previewTemplate.conversionRate}
+                    valueStyle={{ color: '#10b981' }}
+                    prefix="⚡"
+                  />
+                </Card>
+              </Col>
+              <Col span={8}>
+                <Card size="small">
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: 14, color: '#64748b', marginBottom: 8 }}>Template Type</div>
+                    <Tag color="blue" style={{ fontSize: 13, padding: '4px 12px' }}>
+                      {previewTemplate.isPremium ? 'Premium' : 'Standard'}
+                    </Tag>
+                  </div>
+                </Card>
+              </Col>
+            </Row>
+
+            <Divider />
+
+            {/* Description */}
+            <div>
+              <Title level={5}>About This Template</Title>
+              <Paragraph style={{ fontSize: 15, color: '#475569' }}>
+                {previewTemplate.description}
+              </Paragraph>
+            </div>
+
+            {/* Tags */}
+            <div>
+              <Title level={5}>Features & Tags</Title>
+              <Space wrap>
+                {previewTemplate.tags.map((tag) => (
+                  <Tag key={tag} color="blue" style={{ fontSize: 13, padding: '6px 14px' }}>
+                    {tag}
+                  </Tag>
+                ))}
+              </Space>
+            </div>
+
+            {/* What's Included */}
+            <div>
+              <Title level={5}>What's Included</Title>
+              <ul style={{ fontSize: 14, color: '#475569' }}>
+                <li>{previewTemplate.pages} professionally designed pages</li>
+                <li>Pre-configured email sequences and automation</li>
+                <li>Mobile-responsive design</li>
+                <li>Conversion-optimized layout</li>
+                <li>Customizable colors, fonts, and content</li>
+                {previewTemplate.isPremium && <li>Priority support and updates</li>}
+              </ul>
+            </div>
+          </Space>
+        </Modal>
+      )}
   );
 };
 
