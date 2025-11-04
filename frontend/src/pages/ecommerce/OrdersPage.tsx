@@ -114,20 +114,23 @@ const OrdersPage: React.FC = () => {
       [OrderStatus.PENDING]: { color: 'default' },
       [OrderStatus.PROCESSING]: { color: 'processing' },
       [OrderStatus.COMPLETED]: { color: 'success' },
-      [OrderStatus.CANCELED]: { color: 'error' },
+      [OrderStatus.CANCELLED]: { color: 'error' },
+      [OrderStatus.REFUNDED]: { color: 'warning' },
+      [OrderStatus.FAILED]: { color: 'error' },
     };
-    return <Tag color={config[status].color}>{status.toUpperCase()}</Tag>;
+    return <Tag color={config[status]?.color || 'default'}>{status.toUpperCase()}</Tag>;
   };
 
   const getPaymentStatusTag = (status: PaymentStatus) => {
     const config: Record<PaymentStatus, { color: string }> = {
-      [PaymentStatus.PENDING]: { color: 'default' },
+      [PaymentStatus.UNPAID]: { color: 'default' },
+      [PaymentStatus.PENDING]: { color: 'processing' },
       [PaymentStatus.PAID]: { color: 'success' },
       [PaymentStatus.FAILED]: { color: 'error' },
       [PaymentStatus.REFUNDED]: { color: 'warning' },
       [PaymentStatus.PARTIALLY_REFUNDED]: { color: 'orange' },
     };
-    return <Tag color={config[status].color}>{status.replace('_', ' ').toUpperCase()}</Tag>;
+    return <Tag color={config[status]?.color || 'default'}>{status.replace('_', ' ').toUpperCase()}</Tag>;
   };
 
   const getActionMenu = (order: Order): MenuProps => {
@@ -140,7 +143,7 @@ const OrdersPage: React.FC = () => {
       },
     ];
 
-    if (order.fulfillmentStatus === FulfillmentStatus.UNFULFILLED && order.status !== OrderStatus.CANCELED) {
+    if (order.fulfillmentStatus === FulfillmentStatus.UNFULFILLED && order.status !== OrderStatus.CANCELLED) {
       items.push({
         key: 'fulfill',
         icon: <CheckCircleOutlined />,
@@ -149,7 +152,7 @@ const OrdersPage: React.FC = () => {
       });
     }
 
-    if (order.paymentStatus === PaymentStatus.PAID && order.status !== OrderStatus.CANCELED) {
+    if (order.paymentStatus === PaymentStatus.PAID && order.status !== OrderStatus.CANCELLED) {
       items.push({
         key: 'refund',
         icon: <DollarOutlined />,
@@ -158,7 +161,7 @@ const OrdersPage: React.FC = () => {
       });
     }
 
-    if (order.status !== OrderStatus.CANCELED && order.status !== OrderStatus.COMPLETED) {
+    if (order.status !== OrderStatus.CANCELLED && order.status !== OrderStatus.COMPLETED) {
       items.push(
         { type: 'divider' },
         {

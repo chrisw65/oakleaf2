@@ -36,10 +36,28 @@ class SettingsService {
   }
 
   /**
+   * Get a specific setting (full object)
+   */
+  async getSetting(key: string): Promise<PlatformSetting | null> {
+    try {
+      return await apiService.get<PlatformSetting>(`/settings/${key}`);
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Set a setting value (Admin only)
    */
   async set(params: SetSettingParams): Promise<PlatformSetting> {
     return await apiService.post<PlatformSetting>('/settings', params);
+  }
+
+  /**
+   * Set a setting value (alias for set)
+   */
+  async setSetting(params: SetSettingParams): Promise<PlatformSetting> {
+    return await this.set(params);
   }
 
   /**
