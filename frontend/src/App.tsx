@@ -21,6 +21,13 @@ import FunnelAnalyticsPage from './pages/funnels/FunnelAnalyticsPage';
 import EngagementPage from './pages/engagement/EngagementPage';
 import ComingSoon from './components/common/ComingSoon';
 
+// Admin Pages
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import UserManagement from './pages/admin/UserManagement';
+import AdminSettings from './pages/admin/AdminSettings';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
+
 const App: React.FC = () => {
   return (
     <ConfigProvider
@@ -157,6 +164,21 @@ const App: React.FC = () => {
 
               {/* Audit Routes */}
               <Route path="audit" element={<ComingSoon title="Audit Logs" description="View system audit logs" />} />
+            </Route>
+
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
 
             {/* Catch all - redirect to dashboard if authenticated, login otherwise */}
