@@ -128,7 +128,7 @@ export class FilterService {
     }
 
     const applyConditions = (
-      qb: WhereExpressionBuilder,
+      qb: SelectQueryBuilder<Contact> | WhereExpressionBuilder,
       group: FilterGroup,
       paramPrefix: string,
     ) => {
