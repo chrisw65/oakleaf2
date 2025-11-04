@@ -16,7 +16,9 @@ import {
   Switch,
   Tag,
   message,
+  Modal,
 } from 'antd';
+import PageRenderer from './PageRenderer';
 import {
   FontColorsOutlined,
   PictureOutlined,
@@ -560,6 +562,19 @@ const VisualPageBuilder: React.FC<VisualPageBuilderProps> = ({
           </div>
         </Sider>
       </Layout>
+
+      {/* Preview Modal */}
+      <Modal
+        title="Page Preview"
+        open={showPreview}
+        onCancel={() => setShowPreview(false)}
+        footer={null}
+        width="90%"
+        style={{ top: 20 }}
+        bodyStyle={{ padding: 0, maxHeight: 'calc(100vh - 100px)', overflow: 'auto' }}
+      >
+        <PageRenderer elements={elements} preview={true} />
+      </Modal>
     </Layout>
   );
 };
