@@ -39,17 +39,37 @@ export class FunnelService {
     return this.funnelRepository.save(funnel);
   }
 
-  async findAll(tenantId: string, status?: FunnelStatus): Promise<Funnel[]> {
+  async findAll(
+    tenantId: string,
+    status?: FunnelStatus,
+    page?: number,
+    pageSize?: number,
+  ): Promise<{ data: Funnel[]; total: number }> {
     const where: any = { tenantId };
     if (status) {
       where.status = status;
     }
 
-    return this.funnelRepository.find({
+    // If pagination params provided, return paginated results
+    if (page && pageSize) {
+      const skip = (page - 1) * pageSize;
+      const [data, total] = await this.funnelRepository.findAndCount({
+        where,
+        relations: ['pages', 'creator'],
+        order: { createdAt: 'DESC' },
+        take: pageSize,
+        skip,
+      });
+      return { data, total };
+    }
+
+    // Otherwise return all results
+    const data = await this.funnelRepository.find({
       where,
       relations: ['pages', 'creator'],
       order: { createdAt: 'DESC' },
     });
+    return { data, total: data.length };
   }
 
   async findOne(id: string, tenantId: string): Promise<Funnel> {
