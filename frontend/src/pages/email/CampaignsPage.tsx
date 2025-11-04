@@ -23,6 +23,8 @@ import {
   MailOutlined,
   ClockCircleOutlined,
   PauseCircleOutlined,
+  CloseCircleOutlined,
+  FolderOutlined,
   RobotOutlined,
   ThunderboltOutlined,
   AppstoreOutlined,
@@ -143,9 +145,12 @@ const CampaignsPage: React.FC = () => {
       [CampaignStatus.SENDING]: { color: 'processing', icon: <SendOutlined /> },
       [CampaignStatus.SENT]: { color: 'success', icon: <MailOutlined /> },
       [CampaignStatus.PAUSED]: { color: 'warning', icon: <PauseCircleOutlined /> },
+      [CampaignStatus.CANCELLED]: { color: 'error', icon: <CloseCircleOutlined /> },
+      [CampaignStatus.ARCHIVED]: { color: 'default', icon: <FolderOutlined /> },
     };
+    const cfg = config[status] || { color: 'default', icon: null };
     return (
-      <Tag color={config[status].color} icon={config[status].icon}>
+      <Tag color={cfg.color} icon={cfg.icon}>
         {status.toUpperCase()}
       </Tag>
     );

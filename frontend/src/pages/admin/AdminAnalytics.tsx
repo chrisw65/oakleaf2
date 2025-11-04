@@ -59,7 +59,7 @@ const AdminAnalytics: React.FC = () => {
   const loadAnalytics = async () => {
     try {
       setLoading(true);
-      const data = await adminService.getAnalytics(timeRange);
+      const data = await adminService.getAnalyticsData(timeRange);
       setAnalytics(data);
     } catch (error) {
       console.error('Error loading analytics:', error);
@@ -247,7 +247,7 @@ const AdminAnalytics: React.FC = () => {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, value, percent }) =>
+                  label={({ name, value, percent }: any) =>
                     `${name}: ${value} (${(percent * 100).toFixed(0)}%)`
                   }
                   outerRadius={100}

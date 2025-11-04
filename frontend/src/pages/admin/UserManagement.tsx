@@ -106,7 +106,7 @@ const UserManagement: React.FC = () => {
 
   const handleToggleStatus = async (userId: string, isActive: boolean) => {
     try {
-      await adminService.updateUserStatus(userId, { isActive });
+      await adminService.updateUserStatus(userId, isActive);
       message.success(`User ${isActive ? 'activated' : 'deactivated'} successfully`);
       loadUsers();
     } catch (error) {

@@ -39,7 +39,8 @@ export interface User {
   lastName?: string;
   role: 'USER' | 'ADMIN';
   isActive: boolean;
-  createdAt: Date;
+  createdAt: string;
+  lastLogin?: string;
   tenantId: string;
 }
 

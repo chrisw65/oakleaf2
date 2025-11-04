@@ -41,8 +41,9 @@ const OpportunityCard: React.FC<OpportunityCardProps> = ({
       [OpportunityStatus.OPEN]: 'blue',
       [OpportunityStatus.WON]: 'green',
       [OpportunityStatus.LOST]: 'red',
+      [OpportunityStatus.ABANDONED]: 'orange',
     };
-    return colors[status];
+    return colors[status] || 'default';
   };
 
   const menuItems: MenuProps['items'] = [

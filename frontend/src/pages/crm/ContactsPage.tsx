@@ -108,12 +108,13 @@ const ContactsPage: React.FC = () => {
 
   const getStatusColor = (status: ContactStatus): string => {
     const colors: Record<ContactStatus, string> = {
-      [ContactStatus.LEAD]: 'blue',
-      [ContactStatus.PROSPECT]: 'orange',
-      [ContactStatus.CUSTOMER]: 'green',
+      [ContactStatus.ACTIVE]: 'green',
       [ContactStatus.INACTIVE]: 'gray',
+      [ContactStatus.UNSUBSCRIBED]: 'orange',
+      [ContactStatus.BOUNCED]: 'red',
+      [ContactStatus.BLOCKED]: 'volcano',
     };
-    return colors[status];
+    return colors[status] || 'default';
   };
 
   const getActionMenu = (contact: Contact): MenuProps => ({
@@ -266,10 +267,11 @@ const ContactsPage: React.FC = () => {
               onChange={setStatusFilter}
               allowClear
             >
-              <Option value={ContactStatus.LEAD}>Lead</Option>
-              <Option value={ContactStatus.PROSPECT}>Prospect</Option>
-              <Option value={ContactStatus.CUSTOMER}>Customer</Option>
+              <Option value={ContactStatus.ACTIVE}>Active</Option>
               <Option value={ContactStatus.INACTIVE}>Inactive</Option>
+              <Option value={ContactStatus.UNSUBSCRIBED}>Unsubscribed</Option>
+              <Option value={ContactStatus.BOUNCED}>Bounced</Option>
+              <Option value={ContactStatus.BLOCKED}>Blocked</Option>
             </Select>
           </Space>
 

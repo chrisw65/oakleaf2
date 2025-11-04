@@ -57,8 +57,8 @@ const AdminDashboard: React.FC = () => {
       setLoading(true);
       const [statsData, analyticsData, activityData] = await Promise.all([
         adminService.getDashboardStats(),
-        adminService.getAnalytics(30),
-        adminService.getActivity(10),
+        adminService.getAnalyticsData(30),
+        adminService.getRecentActivity(10),
       ]);
       setStats(statsData);
       setAnalytics(analyticsData);
