@@ -744,6 +744,38 @@ class CrmService {
     if (limit) params.limit = limit;
     return apiService.post(`/crm/filters/${id}/apply`, {}, { params });
   }
+
+  // ============================================================================
+  // DEDUPLICATION
+  // ============================================================================
+
+  async findDuplicates(): Promise<any[]> {
+    return apiService.get('/crm/deduplication/find-duplicates');
+  }
+
+  async getDuplicateStats(): Promise<{ totalDuplicateGroups: number; totalDuplicateContacts: number; byConfidence: any }> {
+    return apiService.get('/crm/deduplication/stats');
+  }
+
+  async mergeContacts(primaryContactId: string, duplicateContactIds: string[], mergeStrategy?: any): Promise<Contact> {
+    return apiService.post('/crm/deduplication/merge', {
+      primaryContactId,
+      duplicateContactIds,
+      mergeStrategy,
+    });
+  }
+
+  // ============================================================================
+  // SEARCH
+  // ============================================================================
+
+  async globalSearch(query: string, limit?: number): Promise<any> {
+    return apiService.get('/crm/search/global', { params: { q: query, limit } });
+  }
+
+  async searchContacts(query: string, limit?: number): Promise<{ data: Contact[]; total: number }> {
+    return apiService.get('/crm/search/contacts', { params: { q: query, limit } });
+  }
 }
 
 export const crmService = new CrmService();

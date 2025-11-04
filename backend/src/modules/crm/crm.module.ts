@@ -23,6 +23,8 @@ import { PipelineService } from './services/pipeline.service';
 import { OpportunityService } from './services/opportunity.service';
 import { AnalyticsService } from './services/analytics.service';
 import { FilterService } from './services/filter.service';
+import { DeduplicationService } from './services/deduplication.service';
+import { SearchService } from './services/search.service';
 import { ContactController } from './controllers/contact.controller';
 import { TagController } from './controllers/tag.controller';
 import { CustomFieldController } from './controllers/custom-field.controller';
@@ -31,6 +33,8 @@ import { OpportunityController } from './controllers/opportunity.controller';
 import { TaskController } from './controllers/task.controller';
 import { AnalyticsController } from './controllers/analytics.controller';
 import { FilterController } from './controllers/filter.controller';
+import { DeduplicationController } from './controllers/deduplication.controller';
+import { SearchController } from './controllers/search.controller';
 
 @Module({
   imports: [
@@ -57,6 +61,8 @@ import { FilterController } from './controllers/filter.controller';
     TaskController,
     AnalyticsController,
     FilterController,
+    DeduplicationController,
+    SearchController,
   ],
   providers: [
     ContactService,
@@ -69,6 +75,8 @@ import { FilterController } from './controllers/filter.controller';
     OpportunityService,
     AnalyticsService,
     FilterService,
+    DeduplicationService,
+    SearchService,
   ],
   exports: [
     ContactService,
