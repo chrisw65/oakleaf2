@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder, Brackets } from 'typeorm';
+import { Repository, SelectQueryBuilder, Brackets, WhereExpressionBuilder } from 'typeorm';
 import { SavedFilter, FilterGroup, FilterCondition } from '../saved-filter.entity';
 import { Contact } from '../contact.entity';
 
@@ -13,7 +13,7 @@ export class CreateFilterDto {
   isDefault?: boolean;
 }
 
-export class UpdateFilterDto extends Partial<CreateFilterDto> {}
+export type UpdateFilterDto = Partial<CreateFilterDto>;
 
 @Injectable()
 export class FilterService {
@@ -120,7 +120,7 @@ export class FilterService {
     }
 
     const applyConditions = (
-      qb: SelectQueryBuilder<Contact>,
+      qb: WhereExpressionBuilder,
       group: FilterGroup,
       paramPrefix: string,
     ) => {
@@ -151,7 +151,7 @@ export class FilterService {
    * Apply a single condition to query
    */
   private applyCondition(
-    qb: SelectQueryBuilder<Contact>,
+    qb: WhereExpressionBuilder,
     condition: FilterCondition,
     paramName: string,
   ): void {

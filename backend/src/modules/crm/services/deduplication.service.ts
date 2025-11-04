@@ -176,13 +176,8 @@ export class DeduplicationService {
       if (!merged.zipCode && duplicate.zipCode) merged.zipCode = duplicate.zipCode;
       if (!merged.country && duplicate.country) merged.country = duplicate.country;
 
-      // Merge custom fields
-      if (duplicate.customFields) {
-        merged.customFields = {
-          ...merged.customFields,
-          ...duplicate.customFields,
-        };
-      }
+      // TODO: Merge custom fields (requires loading customFieldValues relation)
+      // Custom fields are stored in a separate table via customFieldValues relation
 
       // Merge tags
       if (mergeStrategy.keepAllTags !== false) {

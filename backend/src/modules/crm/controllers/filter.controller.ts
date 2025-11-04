@@ -19,7 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
-import { FilterService, CreateFilterDto, UpdateFilterDto } from '../services/filter.service';
+import { FilterService, CreateFilterDto, type UpdateFilterDto } from '../services/filter.service';
 import { SavedFilter } from '../saved-filter.entity';
 import { Contact } from '../contact.entity';
 

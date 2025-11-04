@@ -13,7 +13,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
-import { DeduplicationService, DuplicateGroup, MergeContactsDto } from '../services/deduplication.service';
+import { DeduplicationService, DuplicateGroup, type MergeContactsDto } from '../services/deduplication.service';
 import { Contact } from '../contact.entity';
 
 @ApiTags('Contact Deduplication')
