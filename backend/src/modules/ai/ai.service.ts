@@ -11,7 +11,15 @@ export class AIService {
     @Inject(forwardRef(() => SettingsService))
     private readonly settingsService: SettingsService,
   ) {
-    this.logger.log('AI service initialized');
+    this.logger.log('AI service initialized with OpenAI and Ollama support');
+  }
+
+  /**
+   * Get AI provider type for a tenant
+   */
+  private async getAIProvider(tenantId: string): Promise<'openai' | 'ollama'> {
+    const provider = await this.settingsService.get(tenantId, 'ai_provider' as SettingKey);
+    return (provider as 'openai' | 'ollama') || 'openai';
   }
 
   /**
@@ -22,7 +30,7 @@ export class AIService {
     const isEnabled = await this.settingsService.isEnabled(tenantId, SettingKey.OPENAI_ENABLED);
 
     if (!isEnabled) {
-      throw new Error('AI features are disabled. Please enable them in Settings.');
+      throw new Error('OpenAI is disabled. Please enable it in Settings or switch to Ollama.');
     }
 
     if (!apiKey) {
@@ -30,6 +38,48 @@ export class AIService {
     }
 
     return new OpenAI({ apiKey });
+  }
+
+  /**
+   * Get Ollama client (OpenAI-compatible)
+   */
+  private async getOllamaClient(tenantId: string): Promise<OpenAI> {
+    const ollamaUrl = await this.settingsService.get(tenantId, 'ollama_url' as SettingKey);
+    const isEnabled = await this.settingsService.isEnabled(tenantId, 'ollama_enabled' as SettingKey);
+
+    if (!isEnabled) {
+      throw new Error('Ollama is disabled. Please enable it in Settings or switch to OpenAI.');
+    }
+
+    if (!ollamaUrl) {
+      throw new Error('Ollama URL not configured. Please configure it in Settings > AI Configuration.');
+    }
+
+    // Ollama is OpenAI-compatible, so we can use the same client
+    return new OpenAI({
+      baseURL: `${ollamaUrl}/v1`,
+      apiKey: 'ollama', // Ollama doesn't require an API key, but OpenAI client expects one
+    });
+  }
+
+  /**
+   * Get AI client (OpenAI or Ollama) based on tenant settings
+   */
+  private async getAIClient(tenantId: string): Promise<{
+    client: OpenAI;
+    provider: 'openai' | 'ollama';
+    model: string;
+  }> {
+    const provider = await this.getAIProvider(tenantId);
+
+    if (provider === 'ollama') {
+      const client = await this.getOllamaClient(tenantId);
+      const model = await this.settingsService.get(tenantId, 'ollama_model' as SettingKey) || 'llama2';
+      return { client, provider: 'ollama', model };
+    } else {
+      const client = await this.getOpenAIClient(tenantId);
+      return { client, provider: 'openai', model: 'gpt-4o-mini' };
+    }
   }
 
   /**
@@ -45,7 +95,7 @@ export class AIService {
       count?: number;
     },
   ): Promise<string[]> {
-    const openai = await this.getOpenAIClient(tenantId);
+    const { client, model } = await this.getAIClient(tenantId);
     const { product, audience, goal, tone = 'professional', count = 3 } = params;
 
     const prompt = `Generate ${count} compelling email subject lines with the following criteria:
@@ -64,8 +114,8 @@ Requirements:
 Return ONLY the subject lines, one per line, without numbering or extra formatting.`;
 
     try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+      const completion = await client.chat.completions.create({
+        model,
         messages: [
           {
             role: 'system',
@@ -105,7 +155,7 @@ Return ONLY the subject lines, one per line, without numbering or extra formatti
       benefit?: string;
     },
   ): Promise<string> {
-    const openai = await this.getOpenAIClient(tenantId);
+    const { client, model } = await this.getAIClient(tenantId);
     const { product, audience, goal, tone = 'professional', benefit } = params;
 
     const prompt = `Write a compelling email body with the following criteria:
@@ -128,8 +178,8 @@ Requirements:
 Return the email body ready to use.`;
 
     try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+      const completion = await client.chat.completions.create({
+        model,
         messages: [
           {
             role: 'system',
@@ -165,7 +215,7 @@ Return the email body ready to use.`;
       goal?: string;
     },
   ): Promise<string[]> {
-    const openai = await this.getOpenAIClient(tenantId);
+    const { client, model } = await this.getAIClient(tenantId);
     const { platform, topic, message, tone = 'professional', hashtags = [], goal } = params;
 
     const platformGuidelines = {
@@ -186,8 +236,8 @@ Platform guidelines: ${platformGuidelines[platform]}
 Return 3 different variations, each on a new line, separated by "---"`;
 
     try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+      const completion = await client.chat.completions.create({
+        model,
         messages: [
           {
             role: 'system',
@@ -229,7 +279,7 @@ Return 3 different variations, each on a new line, separated by "---"`;
       };
     },
   ): Promise<string> {
-    const openai = await this.getOpenAIClient(tenantId);
+    const { client, model } = await this.getAIClient(tenantId);
     const { message, conversationHistory = [], context } = params;
 
     const systemPrompt = `You are an AI Marketing Assistant for a funnel builder and email marketing platform. You help users with:
@@ -290,7 +340,7 @@ Be conversational, helpful, and specific. Provide actionable recommendations wit
     body: string;
     cta: string;
   }> {
-    const openai = await this.getOpenAIClient(tenantId);
+    const { client, model } = await this.getAIClient(tenantId);
     const { pageType, product, targetAudience, valueProposition, features = [], tone = 'professional' } = params;
 
     const prompt = `Generate compelling copy for a ${pageType} page:
@@ -316,8 +366,8 @@ Format your response as JSON:
 }`;
 
     try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+      const completion = await client.chat.completions.create({
+        model,
         messages: [
           {
             role: 'system',
@@ -358,7 +408,7 @@ Format your response as JSON:
     overallScore?: number;
     recommendations?: string[];
   }> {
-    const openai = await this.getOpenAIClient(tenantId);
+    const { client, model } = await this.getAIClient(tenantId);
     const { subjectLine, body } = params;
 
     const prompt = `Analyze this email and provide detailed scoring and recommendations:
@@ -388,8 +438,8 @@ Format as JSON:
 }`;
 
     try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+      const completion = await client.chat.completions.create({
+        model,
         messages: [
           {
             role: 'system',
