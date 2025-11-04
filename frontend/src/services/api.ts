@@ -17,20 +17,45 @@ class ApiService {
     this.api.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
         const token = localStorage.getItem('accessToken');
+
+        // DEBUG LOGGING
+        console.log('═══════════════════════════════════════');
+        console.log('[API] Request:', config.method?.toUpperCase(), config.url);
+        console.log('[API] Token exists:', !!token);
+        if (token) {
+          console.log('[API] Token preview:', token.substring(0, 30) + '...');
+        } else {
+          console.error('[API] ⚠️  NO TOKEN IN LOCALSTORAGE!');
+        }
+
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`;
+          console.log('[API] ✅ Authorization header set');
+        } else {
+          console.error('[API] ❌ NO AUTHORIZATION HEADER!');
         }
+        console.log('═══════════════════════════════════════');
+
         return config;
       },
       (error) => {
+        console.error('[API] Request error:', error);
         return Promise.reject(error);
       }
     );
 
     // Response interceptor for error handling and token refresh
     this.api.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        console.log('[API] ✅ Response:', response.status, response.config.url);
+        return response;
+      },
       async (error: AxiosError) => {
+        console.error('═══════════════════════════════════════');
+        console.error('[API] ❌ Response Error:', error.response?.status, error.config?.url);
+        console.error('[API] Error data:', error.response?.data);
+        console.error('═══════════════════════════════════════');
+
         const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
         // If error is 401 and we haven't tried to refresh yet
