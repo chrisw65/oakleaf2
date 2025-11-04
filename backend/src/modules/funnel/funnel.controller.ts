@@ -101,4 +101,43 @@ export class FunnelController {
   async remove(@Param('id') id: string, @CurrentUser() user: any) {
     await this.funnelService.remove(id, user.tenantId);
   }
+
+  // Nested page routes
+  @Get(':id/pages')
+  @ApiOperation({ summary: 'Get all pages in a funnel' })
+  async getPages(@Param('id') id: string, @CurrentUser() user: any) {
+    return this.funnelService.getPages(id, user.tenantId);
+  }
+
+  @Post(':id/pages')
+  @ApiOperation({ summary: 'Create a new page in funnel' })
+  async createPage(
+    @Param('id') id: string,
+    @Body() createPageDto: any,
+    @CurrentUser() user: any,
+  ) {
+    return this.funnelService.createPage(id, createPageDto, user.tenantId);
+  }
+
+  @Put(':funnelId/pages/:pageId')
+  @ApiOperation({ summary: 'Update a page in funnel' })
+  async updatePage(
+    @Param('funnelId') funnelId: string,
+    @Param('pageId') pageId: string,
+    @Body() updatePageDto: any,
+    @CurrentUser() user: any,
+  ) {
+    return this.funnelService.updatePage(funnelId, pageId, updatePageDto, user.tenantId);
+  }
+
+  @Delete(':funnelId/pages/:pageId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete a page from funnel' })
+  async deletePage(
+    @Param('funnelId') funnelId: string,
+    @Param('pageId') pageId: string,
+    @CurrentUser() user: any,
+  ) {
+    await this.funnelService.deletePage(funnelId, pageId, user.tenantId);
+  }
 }
