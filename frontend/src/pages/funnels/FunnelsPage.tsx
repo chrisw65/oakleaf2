@@ -267,7 +267,10 @@ const FunnelsPage: React.FC = () => {
       dataIndex: 'conversionRate',
       key: 'conversionRate',
       width: 120,
-      render: (value) => `${(value || 0).toFixed(2)}%`,
+      render: (value) => {
+        const numValue = typeof value === 'number' ? value : 0;
+        return `${numValue.toFixed(2)}%`;
+      },
       sorter: (a, b) => (a.conversionRate || 0) - (b.conversionRate || 0),
     },
     {
