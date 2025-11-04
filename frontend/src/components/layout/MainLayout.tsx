@@ -18,6 +18,7 @@ import {
   BellOutlined,
   SearchOutlined,
   RobotOutlined,
+  CrownOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -115,6 +116,18 @@ const MainLayout: React.FC = () => {
       icon: <ApiOutlined />,
       label: 'Webhooks',
     },
+    // Admin menu - only show for admin users
+    ...(user?.role === 'admin' ? [{
+      key: '/admin',
+      icon: <CrownOutlined />,
+      label: 'Admin',
+      children: [
+        { key: '/admin', label: 'Dashboard' },
+        { key: '/admin/users', label: 'User Management' },
+        { key: '/admin/analytics', label: 'Analytics' },
+        { key: '/admin/settings', label: 'Settings' },
+      ],
+    }] : []),
     {
       key: '/settings',
       icon: <SettingOutlined />,

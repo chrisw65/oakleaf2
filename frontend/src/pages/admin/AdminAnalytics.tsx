@@ -247,9 +247,10 @@ const AdminAnalytics: React.FC = () => {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, value, percent }: any) =>
-                    `${name}: ${value} (${(percent * 100).toFixed(0)}%)`
-                  }
+                  label={({ name, value, percent }: any) => {
+                    if (!name || typeof value === 'undefined' || typeof percent === 'undefined') return '';
+                    return `${name}: ${value} (${(percent * 100).toFixed(0)}%)`;
+                  }}
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"

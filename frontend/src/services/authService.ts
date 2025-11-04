@@ -26,7 +26,7 @@ export interface User {
   lastName: string;
   phone?: string;
   tenantId: string;
-  roles?: string[];
+  role: string;  // 'user' or 'admin'
   permissions?: string[];
   isActive: boolean;
   emailVerified: boolean;
