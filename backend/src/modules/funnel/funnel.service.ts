@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { Funnel, FunnelStatus } from './funnel.entity';
 import { Page } from './page.entity';
 import { CreateFunnelDto, UpdateFunnelDto, CloneFunnelDto } from './dto/funnel.dto';
+import { PageService } from './page.service';
 
 @Injectable()
 export class FunnelService {
@@ -17,6 +18,7 @@ export class FunnelService {
     private funnelRepository: Repository<Funnel>,
     @InjectRepository(Page)
     private pageRepository: Repository<Page>,
+    private pageService: PageService,
   ) {}
 
   async create(createFunnelDto: CreateFunnelDto, tenantId: string, userId: string): Promise<Funnel> {
@@ -235,5 +237,54 @@ export class FunnelService {
         conversionRate: page.conversionRate,
       })),
     };
+  }
+
+  // Page management methods
+  async getPages(funnelId: string, tenantId: string): Promise<Page[]> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.findAll(funnelId, tenantId);
+  }
+
+  async getPage(funnelId: string, pageId: string, tenantId: string): Promise<Page> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.findOne(pageId, tenantId);
+  }
+
+  async createPage(funnelId: string, createPageDto: any, tenantId: string): Promise<Page> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.create({ ...createPageDto, funnelId }, tenantId);
+  }
+
+  async updatePage(funnelId: string, pageId: string, updatePageDto: any, tenantId: string): Promise<Page> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.update(pageId, updatePageDto, tenantId);
+  }
+
+  async deletePage(funnelId: string, pageId: string, tenantId: string): Promise<void> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    await this.pageService.remove(pageId, tenantId);
+  }
+
+  async reorderPages(funnelId: string, reorderDto: any, tenantId: string): Promise<Page[]> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.reorder(funnelId, reorderDto, tenantId);
+  }
+
+  async publishPage(funnelId: string, pageId: string, tenantId: string): Promise<Page> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.update(pageId, { isPublished: true }, tenantId);
+  }
+
+  async unpublishPage(funnelId: string, pageId: string, tenantId: string): Promise<Page> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.update(pageId, { isPublished: false }, tenantId);
   }
 }
