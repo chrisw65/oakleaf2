@@ -218,7 +218,8 @@ const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
   };
 
   return (
-    <Modal
+    <>
+      <Modal
       title={
         <div>
           <Title level={3} style={{ marginBottom: 8 }}>
@@ -424,7 +425,7 @@ const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
           </Text>
         </div>
       </Space>
-    </Modal>
+      </Modal>
 
       {/* Preview Modal */}
       {previewTemplate && (
@@ -563,6 +564,7 @@ const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
           </Space>
         </Modal>
       )}
+    </>
   );
 };
 
