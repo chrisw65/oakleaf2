@@ -34,6 +34,8 @@ import { ThemeService } from './services/theme.service';
 import { FunnelController } from './funnel.controller';
 import { PageController } from './page.controller';
 import { PublicFunnelController } from './public-funnel.controller';
+import { FormSubmissionController } from './form-submission.controller';
+import { GdprController } from './gdpr.controller';
 import { FunnelEnhancedController } from './controllers/funnel-enhanced.controller';
 import { PageBuilderController } from './controllers/page-builder.controller';
 
@@ -67,6 +69,8 @@ import { PageBuilderController } from './controllers/page-builder.controller';
     FunnelController,
     PageController,
     PublicFunnelController,
+    FormSubmissionController,
+    GdprController,
     FunnelEnhancedController,
     PageBuilderController,
   ],

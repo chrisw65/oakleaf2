@@ -1,7 +1,8 @@
-import React from 'react';
-import { Button, Form, Input, Card, Row, Col, Statistic, Typography } from 'antd';
+import React, { useState } from 'react';
+import { Button, Form, Input, Card, Row, Col, Statistic, Typography, message, Checkbox } from 'antd';
+import axios from 'axios';
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph, Text, Link } = Typography;
 
 interface PageElement {
   id: string;
@@ -118,26 +119,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({ elements, preview = false }
         );
 
       case 'optin-form':
-        return (
-          <div key={element.id} style={style}>
-            <Card style={{ maxWidth: 500, margin: '0 auto' }}>
-              <Form layout="vertical">
-                <Form.Item>
-                  <Input
-                    size="large"
-                    placeholder={element.content?.placeholder || 'Enter your email'}
-                    type="email"
-                  />
-                </Form.Item>
-                <Form.Item>
-                  <Button type="primary" size="large" block>
-                    {element.content?.buttonText || 'Get Started'}
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Card>
-          </div>
-        );
+        return <OptInFormElement key={element.id} element={element} style={style} />;
 
       case 'pricing-table':
         return (
@@ -267,6 +249,150 @@ const PageRenderer: React.FC<PageRendererProps> = ({ elements, preview = false }
   return (
     <div style={{ width: '100%', minHeight: '100vh', backgroundColor: '#fff' }}>
       {elements.map(renderElement)}
+    </div>
+  );
+};
+
+// Separate component for opt-in forms to handle state
+const OptInFormElement: React.FC<{ element: PageElement; style: any }> = ({ element, style }) => {
+  const [form] = Form.useForm();
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (values: any) => {
+    setSubmitting(true);
+    try {
+      // Extract pageId from URL or element metadata
+      const pathParts = window.location.pathname.split('/');
+      const pageSlug = pathParts[pathParts.length - 1];
+
+      // Get pageId from the URL or metadata (we'll need to pass this somehow)
+      // For now, we'll use a data attribute or global state
+      const pageId = (window as any).currentPageId;
+
+      if (!pageId) {
+        message.error('Unable to submit form. Please try again.');
+        return;
+      }
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/v1/form-submissions/public/${pageId}`,
+        {
+          data: values,
+          consent: {
+            marketing: values.gdprConsent || false,
+            timestamp: new Date().toISOString(),
+            ip: await fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => d.ip).catch(() => null),
+            userAgent: navigator.userAgent,
+          },
+          metadata: {
+            userAgent: navigator.userAgent,
+            referrer: document.referrer,
+            timestamp: new Date().toISOString(),
+          },
+        }
+      );
+
+      if (response.data.success) {
+        message.success(element.content?.successMessage || 'Thank you! Your submission has been received.');
+        setSubmitted(true);
+        form.resetFields();
+      } else {
+        message.error(response.data.message || 'Failed to submit form');
+      }
+    } catch (error: any) {
+      console.error('Form submission error:', error);
+      message.error(element.content?.errorMessage || 'An error occurred. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div style={style}>
+        <Card style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
+          <Title level={3}>✅ Success!</Title>
+          <Paragraph>
+            {element.content?.successMessage || 'Thank you! Your submission has been received.'}
+          </Paragraph>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div style={style}>
+      <Card style={{ maxWidth: 500, margin: '0 auto' }}>
+        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+          <Form.Item
+            name="email"
+            rules={[
+              { required: true, message: 'Please enter your email' },
+              { type: 'email', message: 'Please enter a valid email' },
+            ]}
+          >
+            <Input
+              size="large"
+              placeholder={element.content?.placeholder || 'Enter your email'}
+              type="email"
+            />
+          </Form.Item>
+
+          {element.content?.collectName && (
+            <Form.Item
+              name="name"
+              rules={[{ required: true, message: 'Please enter your name' }]}
+            >
+              <Input size="large" placeholder="Enter your name" />
+            </Form.Item>
+          )}
+
+          {element.content?.collectPhone && (
+            <Form.Item name="phone">
+              <Input size="large" placeholder="Enter your phone number" type="tel" />
+            </Form.Item>
+          )}
+
+          {/* GDPR Consent - Required by law */}
+          <Form.Item
+            name="gdprConsent"
+            valuePropName="checked"
+            rules={[
+              {
+                validator: (_, value) =>
+                  value
+                    ? Promise.resolve()
+                    : Promise.reject(new Error('You must agree to receive communications')),
+              },
+            ]}
+          >
+            <Checkbox>
+              <Text style={{ fontSize: 12 }}>
+                I agree to receive emails and communications. I understand my data will be processed according to the{' '}
+                <Link href="/privacy-policy" target="_blank" style={{ fontSize: 12 }}>
+                  Privacy Policy
+                </Link>
+                . I can unsubscribe at any time.
+              </Text>
+            </Checkbox>
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" size="large" block htmlType="submit" loading={submitting}>
+              {element.content?.buttonText || 'Get Started'}
+            </Button>
+          </Form.Item>
+
+          <Text type="secondary" style={{ fontSize: 11, display: 'block', textAlign: 'center', marginTop: 8 }}>
+            We respect your privacy and will never share your information. See our{' '}
+            <Link href="/privacy-policy" target="_blank" style={{ fontSize: 11 }}>
+              Privacy Policy
+            </Link>
+            .
+          </Text>
+        </Form>
+      </Card>
     </div>
   );
 };

@@ -23,6 +23,9 @@ const PublicPage: React.FC = () => {
       );
       setPage(response.data);
 
+      // Set pageId in global scope for form submissions
+      (window as any).currentPageId = response.data.id;
+
       // Set page title and meta tags
       if (response.data.seoSettings?.title) {
         document.title = response.data.seoSettings.title;

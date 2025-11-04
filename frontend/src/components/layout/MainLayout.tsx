@@ -66,6 +66,7 @@ const MainLayout: React.FC = () => {
       label: 'CRM',
       children: [
         { key: '/contacts', label: 'Contacts' },
+        { key: '/tasks', label: 'Tasks' },
         { key: '/opportunities', label: 'Opportunities' },
         { key: '/pipelines', label: 'Pipelines' },
       ],

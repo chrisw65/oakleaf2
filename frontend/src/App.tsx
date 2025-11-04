@@ -8,6 +8,8 @@ import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import ContactsPage from './pages/crm/ContactsPage';
+import ContactDetailPage from './pages/crm/ContactDetailPage';
+import TasksPage from './pages/crm/TasksPage';
 import OpportunitiesPage from './pages/crm/OpportunitiesPage';
 import PipelinesPage from './pages/crm/PipelinesPage';
 import CampaignsPage from './pages/email/CampaignsPage';
@@ -22,6 +24,10 @@ import PageEditPage from './pages/funnels/PageEditPage';
 import EngagementPage from './pages/engagement/EngagementPage';
 import ComingSoon from './components/common/ComingSoon';
 import PublicPage from './pages/public/PublicPage';
+import PrivacyPolicy from './pages/public/PrivacyPolicy';
+import CookiePolicy from './pages/public/CookiePolicy';
+import TermsAndConditions from './pages/public/TermsAndConditions';
+import CookieConsent from './components/common/CookieConsent';
 
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout';
@@ -108,11 +114,17 @@ const App: React.FC = () => {
       <AntApp>
         <AuthProvider>
           <Router>
+          <CookieConsent />
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/p/:funnelSlug/:pageSlug" element={<PublicPage />} />
+
+            {/* Legal pages */}
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
 
             {/* Protected routes */}
             <Route
@@ -128,6 +140,8 @@ const App: React.FC = () => {
 
               {/* CRM Routes */}
               <Route path="contacts" element={<ContactsPage />} />
+              <Route path="contacts/:id" element={<ContactDetailPage />} />
+              <Route path="tasks" element={<TasksPage />} />
               <Route path="opportunities" element={<OpportunitiesPage />} />
               <Route path="pipelines" element={<PipelinesPage />} />
 
