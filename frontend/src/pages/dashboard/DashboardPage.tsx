@@ -142,7 +142,6 @@ const DashboardPage: React.FC = () => {
     innerRadius: 0.6,
     color: ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b'],
     label: {
-      type: 'outer' as const,
       formatter: (datum: any) => {
         if (!datum || !datum.type || typeof datum.value === 'undefined') return '';
         return `${datum.type}: ${datum.value}%`;
