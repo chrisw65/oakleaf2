@@ -87,6 +87,11 @@ const FunnelBuilderPage: React.FC = () => {
   };
 
   const handleEditPage = (page: FunnelPage) => {
+    // Navigate to visual page builder
+    navigate(`/funnels/${funnelId}/pages/${page.id}/edit`);
+  };
+
+  const handleEditPageSettings = (page: FunnelPage) => {
     setEditingPage(page);
     setIsPageModalVisible(true);
   };
