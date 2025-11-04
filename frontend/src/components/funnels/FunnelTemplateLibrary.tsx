@@ -507,12 +507,12 @@ const FunnelTemplateLibrary: React.FC<FunnelTemplateLibraryProps> = ({
               </Col>
               <Col span={8}>
                 <Card size="small">
-                  <Statistic
-                    title="Avg Conversion"
-                    value={previewTemplate.conversionRate}
-                    valueStyle={{ color: '#10b981' }}
-                    prefix="⚡"
-                  />
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: 14, color: '#64748b', marginBottom: 8 }}>Avg Conversion</div>
+                    <div style={{ fontSize: 24, fontWeight: 600, color: '#10b981' }}>
+                      ⚡ {previewTemplate.conversionRate}
+                    </div>
+                  </div>
                 </Card>
               </Col>
               <Col span={8}>
