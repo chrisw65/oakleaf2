@@ -144,7 +144,10 @@ const DashboardPage: React.FC = () => {
     label: {
       type: 'spider' as const,
       labelHeight: 28,
-      formatter: (datum: any) => `${datum.type}\n${datum.value}%`,
+      formatter: (datum: any) => {
+        if (!datum || !datum.type || typeof datum.value === 'undefined') return '';
+        return `${datum.type}\n${datum.value}%`;
+      },
       style: {
         fontSize: 12,
       },
