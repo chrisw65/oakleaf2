@@ -151,6 +151,133 @@ export interface UpdatePipelineDto {
   isActive?: boolean;
 }
 
+// ACTIVITIES
+export interface ContactActivity {
+  id: string;
+  contactId: string;
+  activityType: string;
+  title?: string;
+  description?: string;
+  metadata?: Record<string, any>;
+  userId?: string;
+  user?: { id: string; firstName: string; lastName: string; email: string };
+  occurredAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateActivityDto {
+  activityType: string;
+  title?: string;
+  description?: string;
+  metadata?: Record<string, any>;
+  occurredAt?: string;
+}
+
+// NOTES
+export interface Note {
+  id: string;
+  content: string;
+  isPinned: boolean;
+  noteType?: string;
+  contactId?: string;
+  opportunityId?: string;
+  createdById: string;
+  createdBy: { id: string; firstName: string; lastName: string; email: string };
+  editedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateNoteDto {
+  content: string;
+  noteType?: string;
+  isPinned?: boolean;
+}
+
+export interface UpdateNoteDto {
+  content?: string;
+  noteType?: string;
+  isPinned?: boolean;
+}
+
+// TASKS
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  taskType: TaskType;
+  status: TaskStatus;
+  priority: TaskPriority;
+  dueDate?: string;
+  completedAt?: string;
+  startDate?: string;
+  estimatedDuration?: number;
+  actualDuration?: number;
+  contactId?: string;
+  contact?: Contact;
+  opportunityId?: string;
+  opportunity?: Opportunity;
+  createdById: string;
+  createdBy?: { id: string; firstName: string; lastName: string; email: string };
+  assignedToId?: string;
+  assignedTo?: { id: string; firstName: string; lastName: string; email: string };
+  hasReminder: boolean;
+  reminderDate?: string;
+  reminderSent: boolean;
+  outcome?: string;
+  metadata?: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export enum TaskStatus {
+  TODO = 'todo',
+  IN_PROGRESS = 'in_progress',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
+}
+
+export enum TaskPriority {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  URGENT = 'urgent',
+}
+
+export enum TaskType {
+  CALL = 'call',
+  EMAIL = 'email',
+  MEETING = 'meeting',
+  FOLLOW_UP = 'follow_up',
+  TODO = 'todo',
+  DEMO = 'demo',
+  PROPOSAL = 'proposal',
+  OTHER = 'other',
+}
+
+export interface CreateTaskDto {
+  title: string;
+  description?: string;
+  taskType?: TaskType;
+  priority?: TaskPriority;
+  dueDate?: string;
+  startDate?: string;
+  estimatedDuration?: number;
+  contactId?: string;
+  opportunityId?: string;
+  assignedToId?: string;
+  hasReminder?: boolean;
+  reminderDate?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface UpdateTaskDto extends Partial<CreateTaskDto> {
+  status?: TaskStatus;
+  actualDuration?: number;
+  outcome?: string;
+}
+
 // ============================================================================
 // CRM SERVICE
 // ============================================================================
@@ -268,6 +395,170 @@ class CrmService {
 
   async reorderStages(pipelineId: string, stageIds: string[]): Promise<Pipeline> {
     return apiService.post(`/crm/pipelines/${pipelineId}/stages/reorder`, { stageIds });
+  }
+
+  // ACTIVITIES
+  async getContactActivities(
+    contactId: string,
+    params?: {
+      activityType?: string;
+      page?: number;
+      limit?: number;
+      fromDate?: string;
+      toDate?: string;
+    }
+  ): Promise<PaginatedResponse<ContactActivity>> {
+    const queryParams = new URLSearchParams();
+    if (params?.activityType) queryParams.append('activityType', params.activityType);
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.fromDate) queryParams.append('fromDate', params.fromDate);
+    if (params?.toDate) queryParams.append('toDate', params.toDate);
+
+    return apiService.get(`/crm/contacts/${contactId}/activities?${queryParams.toString()}`);
+  }
+
+  async createActivity(contactId: string, data: CreateActivityDto): Promise<ContactActivity> {
+    return apiService.post(`/crm/contacts/${contactId}/activities`, data);
+  }
+
+  async getActivityStats(contactId: string): Promise<any> {
+    return apiService.get(`/crm/contacts/${contactId}/activities/stats`);
+  }
+
+  async deleteActivity(activityId: string): Promise<void> {
+    return apiService.delete(`/crm/contacts/activities/${activityId}`);
+  }
+
+  // NOTES
+  async getContactNotes(
+    contactId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+      noteType?: string;
+      pinnedOnly?: boolean;
+    }
+  ): Promise<PaginatedResponse<Note>> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.noteType) queryParams.append('noteType', params.noteType);
+    if (params?.pinnedOnly) queryParams.append('pinnedOnly', 'true');
+
+    return apiService.get(`/crm/contacts/${contactId}/notes?${queryParams.toString()}`);
+  }
+
+  async createNote(contactId: string, data: CreateNoteDto): Promise<Note> {
+    return apiService.post(`/crm/contacts/${contactId}/notes`, data);
+  }
+
+  async updateNote(noteId: string, data: UpdateNoteDto): Promise<Note> {
+    return apiService.put(`/crm/contacts/notes/${noteId}`, data);
+  }
+
+  async deleteNote(noteId: string): Promise<void> {
+    return apiService.delete(`/crm/contacts/notes/${noteId}`);
+  }
+
+  async toggleNotePin(noteId: string): Promise<Note> {
+    return apiService.post(`/crm/contacts/notes/${noteId}/toggle-pin`);
+  }
+
+  async getNoteStats(contactId: string): Promise<any> {
+    return apiService.get(`/crm/contacts/${contactId}/notes/stats`);
+  }
+
+  // TASKS
+  async getTasks(params?: {
+    status?: TaskStatus;
+    priority?: TaskPriority;
+    taskType?: TaskType;
+    contactId?: string;
+    opportunityId?: string;
+    assignedToId?: string;
+    overdue?: boolean;
+    dueToday?: boolean;
+    dueThisWeek?: boolean;
+    page?: number;
+    limit?: number;
+  }): Promise<PaginatedResponse<Task>> {
+    const queryParams = new URLSearchParams();
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.priority) queryParams.append('priority', params.priority);
+    if (params?.taskType) queryParams.append('taskType', params.taskType);
+    if (params?.contactId) queryParams.append('contactId', params.contactId);
+    if (params?.opportunityId) queryParams.append('opportunityId', params.opportunityId);
+    if (params?.assignedToId) queryParams.append('assignedToId', params.assignedToId);
+    if (params?.overdue) queryParams.append('overdue', 'true');
+    if (params?.dueToday) queryParams.append('dueToday', 'true');
+    if (params?.dueThisWeek) queryParams.append('dueThisWeek', 'true');
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+
+    return apiService.get(`/crm/tasks?${queryParams.toString()}`);
+  }
+
+  async getMyTasks(params?: {
+    status?: TaskStatus;
+    page?: number;
+    limit?: number;
+  }): Promise<PaginatedResponse<Task>> {
+    const queryParams = new URLSearchParams();
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+
+    return apiService.get(`/crm/tasks/my-tasks?${queryParams.toString()}`);
+  }
+
+  async getMyTaskStats(): Promise<any> {
+    return apiService.get('/crm/tasks/my-stats');
+  }
+
+  async getUpcomingTasks(days?: number): Promise<Task[]> {
+    const url = days ? `/crm/tasks/upcoming?days=${days}` : '/crm/tasks/upcoming';
+    return apiService.get(url);
+  }
+
+  async getOverdueTasks(): Promise<Task[]> {
+    return apiService.get('/crm/tasks/overdue');
+  }
+
+  async getDueTodayTasks(): Promise<Task[]> {
+    return apiService.get('/crm/tasks/due-today');
+  }
+
+  async getTask(id: string): Promise<Task> {
+    return apiService.get(`/crm/tasks/${id}`);
+  }
+
+  async createTask(data: CreateTaskDto): Promise<Task> {
+    return apiService.post('/crm/tasks', data);
+  }
+
+  async updateTask(id: string, data: UpdateTaskDto): Promise<Task> {
+    return apiService.put(`/crm/tasks/${id}`, data);
+  }
+
+  async deleteTask(id: string): Promise<void> {
+    return apiService.delete(`/crm/tasks/${id}`);
+  }
+
+  async markTaskComplete(id: string, outcome?: string): Promise<Task> {
+    return apiService.post(`/crm/tasks/${id}/complete`, { outcome });
+  }
+
+  async assignTask(id: string, assignedToId: string): Promise<Task> {
+    return apiService.post(`/crm/tasks/${id}/assign`, { assignedToId });
+  }
+
+  async updateTaskPriority(id: string, priority: TaskPriority): Promise<Task> {
+    return apiService.put(`/crm/tasks/${id}/priority`, { priority });
+  }
+
+  async updateTaskDueDate(id: string, dueDate: string): Promise<Task> {
+    return apiService.put(`/crm/tasks/${id}/due-date`, { dueDate });
   }
 }
 
