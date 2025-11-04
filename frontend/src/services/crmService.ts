@@ -655,6 +655,26 @@ class CrmService {
   async getRepPerformanceReport(): Promise<RepPerformanceReport[]> {
     return apiService.get('/crm/analytics/rep-performance');
   }
+
+  // ============================================================================
+  // BULK OPERATIONS
+  // ============================================================================
+
+  async bulkUpdateContacts(contactIds: string[], updates: Partial<UpdateContactDto>): Promise<{ updated: number; contacts: Contact[] }> {
+    return apiService.post('/crm/contacts/bulk/update', { contactIds, updates });
+  }
+
+  async bulkDeleteContacts(contactIds: string[]): Promise<{ deleted: number }> {
+    return apiService.post('/crm/contacts/bulk/delete', { contactIds });
+  }
+
+  async bulkAddTags(contactIds: string[], tagIds: string[]): Promise<{ updated: number }> {
+    return apiService.post('/crm/contacts/bulk/add-tags', { contactIds, tagIds });
+  }
+
+  async bulkRemoveTags(contactIds: string[], tagIds: string[]): Promise<{ updated: number }> {
+    return apiService.post('/crm/contacts/bulk/remove-tags', { contactIds, tagIds });
+  }
 }
 
 export const crmService = new CrmService();
