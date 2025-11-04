@@ -21,6 +21,7 @@ import FunnelAnalyticsPage from './pages/funnels/FunnelAnalyticsPage';
 import PageEditPage from './pages/funnels/PageEditPage';
 import EngagementPage from './pages/engagement/EngagementPage';
 import ComingSoon from './components/common/ComingSoon';
+import PublicPage from './pages/public/PublicPage';
 
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout';
@@ -111,6 +112,7 @@ const App: React.FC = () => {
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/p/:funnelSlug/:pageSlug" element={<PublicPage />} />
 
             {/* Protected routes */}
             <Route

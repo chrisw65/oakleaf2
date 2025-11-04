@@ -33,6 +33,7 @@ import { PopupBuilderService } from './services/popup-builder.service';
 import { ThemeService } from './services/theme.service';
 import { FunnelController } from './funnel.controller';
 import { PageController } from './page.controller';
+import { PublicFunnelController } from './public-funnel.controller';
 import { FunnelEnhancedController } from './controllers/funnel-enhanced.controller';
 import { PageBuilderController } from './controllers/page-builder.controller';
 
@@ -65,6 +66,7 @@ import { PageBuilderController } from './controllers/page-builder.controller';
   controllers: [
     FunnelController,
     PageController,
+    PublicFunnelController,
     FunnelEnhancedController,
     PageBuilderController,
   ],
