@@ -246,6 +246,12 @@ export class FunnelService {
     return this.pageService.findAll(funnelId, tenantId);
   }
 
+  async getPage(funnelId: string, pageId: string, tenantId: string): Promise<Page> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.findOne(pageId, tenantId);
+  }
+
   async createPage(funnelId: string, createPageDto: any, tenantId: string): Promise<Page> {
     // Verify funnel exists and belongs to tenant
     await this.findOne(funnelId, tenantId);
@@ -262,5 +268,23 @@ export class FunnelService {
     // Verify funnel exists and belongs to tenant
     await this.findOne(funnelId, tenantId);
     await this.pageService.remove(pageId, tenantId);
+  }
+
+  async reorderPages(funnelId: string, reorderDto: any, tenantId: string): Promise<Page[]> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.reorder(funnelId, reorderDto, tenantId);
+  }
+
+  async publishPage(funnelId: string, pageId: string, tenantId: string): Promise<Page> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.update(pageId, { isPublished: true }, tenantId);
+  }
+
+  async unpublishPage(funnelId: string, pageId: string, tenantId: string): Promise<Page> {
+    // Verify funnel exists and belongs to tenant
+    await this.findOne(funnelId, tenantId);
+    return this.pageService.update(pageId, { isPublished: false }, tenantId);
   }
 }
