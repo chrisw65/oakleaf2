@@ -37,7 +37,8 @@ export class CreatePageDto {
   position?: number;
 
   @IsObject()
-  content: Record<string, any>;
+  @IsOptional()
+  content?: Record<string, any>;
 
   @IsObject()
   @IsOptional()
