@@ -22,6 +22,10 @@ import PageEditPage from './pages/funnels/PageEditPage';
 import EngagementPage from './pages/engagement/EngagementPage';
 import ComingSoon from './components/common/ComingSoon';
 import PublicPage from './pages/public/PublicPage';
+import PrivacyPolicy from './pages/public/PrivacyPolicy';
+import CookiePolicy from './pages/public/CookiePolicy';
+import TermsAndConditions from './pages/public/TermsAndConditions';
+import CookieConsent from './components/common/CookieConsent';
 
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout';
@@ -108,11 +112,17 @@ const App: React.FC = () => {
       <AntApp>
         <AuthProvider>
           <Router>
+          <CookieConsent />
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/p/:funnelSlug/:pageSlug" element={<PublicPage />} />
+
+            {/* Legal pages */}
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
 
             {/* Protected routes */}
             <Route

@@ -33,7 +33,16 @@ export class FormSubmissionController {
   @ApiOperation({ summary: 'Submit a form from a public page' })
   async submitPublicForm(
     @Param('pageId') pageId: string,
-    @Body() body: { data: Record<string, any>; metadata?: any },
+    @Body() body: {
+      data: Record<string, any>;
+      consent?: {
+        marketing: boolean;
+        timestamp: string;
+        ip: string;
+        userAgent: string;
+      };
+      metadata?: any
+    },
   ) {
     // Get the page to verify it exists and get tenantId
     const page = await this.pageRepository.findOne({
@@ -44,13 +53,21 @@ export class FormSubmissionController {
       return { success: false, message: 'Page not found or not published' };
     }
 
-    // Create form submission
+    // GDPR Compliance: Verify consent was provided
+    if (!body.consent || !body.consent.marketing) {
+      return {
+        success: false,
+        message: 'Consent is required to submit this form',
+      };
+    }
+
+    // Create form submission with GDPR consent audit trail
     const submission = this.submissionRepository.create({
       formId: null, // We'll use pageId as form identifier for now
       data: body.data,
       status: FormSubmissionStatus.COMPLETED,
-      ipAddress: body.metadata?.ipAddress,
-      userAgent: body.metadata?.userAgent,
+      ipAddress: body.consent?.ip || body.metadata?.ipAddress,
+      userAgent: body.consent?.userAgent || body.metadata?.userAgent,
       referrer: body.metadata?.referrer,
       utmParams: body.metadata?.utmParams || {},
       tenantId: page.tenantId,
@@ -58,6 +75,15 @@ export class FormSubmissionController {
         pageId: pageId,
         pageName: page.name,
         timestamp: new Date().toISOString(),
+        // GDPR Consent Audit Trail
+        consent: {
+          marketing: body.consent.marketing,
+          consentGivenAt: body.consent.timestamp,
+          consentIp: body.consent.ip,
+          consentUserAgent: body.consent.userAgent,
+          consentVersion: '1.0', // Track policy version
+          consentMethod: 'opt-in-form',
+        },
       },
     });
 
@@ -73,13 +99,27 @@ export class FormSubmissionController {
         });
 
         if (contact) {
-          // Update existing contact
+          // Update existing contact - preserve consent history
           contact.firstName = body.data.firstName || body.data.name || contact.firstName;
           contact.lastName = body.data.lastName || contact.lastName;
           contact.phone = body.data.phone || contact.phone;
+
+          // Add new consent to history
+          if (!contact.metadata) contact.metadata = {};
+          if (!contact.metadata.consentHistory) contact.metadata.consentHistory = [];
+          contact.metadata.consentHistory.push({
+            timestamp: body.consent.timestamp,
+            ip: body.consent.ip,
+            userAgent: body.consent.userAgent,
+            marketing: body.consent.marketing,
+            version: '1.0',
+            source: 'opt-in-form',
+            submissionId: submission.id,
+          });
+
           await this.contactRepository.save(contact);
         } else {
-          // Create new contact
+          // Create new contact with GDPR consent
           contact = this.contactRepository.create({
             email,
             firstName: body.data.firstName || body.data.name || 'Unknown',
@@ -91,6 +131,22 @@ export class FormSubmissionController {
             metadata: {
               formSubmissionId: submission.id,
               pageId: pageId,
+              // GDPR Consent Records
+              marketingConsent: true,
+              marketingConsentGivenAt: body.consent.timestamp,
+              marketingConsentIp: body.consent.ip,
+              consentVersion: '1.0',
+              consentHistory: [
+                {
+                  timestamp: body.consent.timestamp,
+                  ip: body.consent.ip,
+                  userAgent: body.consent.userAgent,
+                  marketing: body.consent.marketing,
+                  version: '1.0',
+                  source: 'opt-in-form',
+                  submissionId: submission.id,
+                },
+              ],
             },
           });
           await this.contactRepository.save(contact);

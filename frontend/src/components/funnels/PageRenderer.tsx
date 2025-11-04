@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Card, Row, Col, Statistic, Typography, message } from 'antd';
+import { Button, Form, Input, Card, Row, Col, Statistic, Typography, message, Checkbox } from 'antd';
 import axios from 'axios';
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph, Text, Link } = Typography;
 
 interface PageElement {
   id: string;
@@ -279,6 +279,12 @@ const OptInFormElement: React.FC<{ element: PageElement; style: any }> = ({ elem
         `${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/v1/form-submissions/public/${pageId}`,
         {
           data: values,
+          consent: {
+            marketing: values.gdprConsent || false,
+            timestamp: new Date().toISOString(),
+            ip: await fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => d.ip).catch(() => null),
+            userAgent: navigator.userAgent,
+          },
           metadata: {
             userAgent: navigator.userAgent,
             referrer: document.referrer,
@@ -348,11 +354,43 @@ const OptInFormElement: React.FC<{ element: PageElement; style: any }> = ({ elem
             </Form.Item>
           )}
 
+          {/* GDPR Consent - Required by law */}
+          <Form.Item
+            name="gdprConsent"
+            valuePropName="checked"
+            rules={[
+              {
+                validator: (_, value) =>
+                  value
+                    ? Promise.resolve()
+                    : Promise.reject(new Error('You must agree to receive communications')),
+              },
+            ]}
+          >
+            <Checkbox>
+              <Text style={{ fontSize: 12 }}>
+                I agree to receive emails and communications. I understand my data will be processed according to the{' '}
+                <Link href="/privacy-policy" target="_blank" style={{ fontSize: 12 }}>
+                  Privacy Policy
+                </Link>
+                . I can unsubscribe at any time.
+              </Text>
+            </Checkbox>
+          </Form.Item>
+
           <Form.Item>
             <Button type="primary" size="large" block htmlType="submit" loading={submitting}>
               {element.content?.buttonText || 'Get Started'}
             </Button>
           </Form.Item>
+
+          <Text type="secondary" style={{ fontSize: 11, display: 'block', textAlign: 'center', marginTop: 8 }}>
+            We respect your privacy and will never share your information. See our{' '}
+            <Link href="/privacy-policy" target="_blank" style={{ fontSize: 11 }}>
+              Privacy Policy
+            </Link>
+            .
+          </Text>
         </Form>
       </Card>
     </div>
