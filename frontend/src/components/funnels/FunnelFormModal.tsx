@@ -69,10 +69,29 @@ const FunnelFormModal: React.FC<FunnelFormModalProps> = ({
         // Form validation error
         return;
       }
+
+      // Extract error message from various possible response formats
+      let errorMessage = 'An unexpected error occurred';
+
+      if (error.response?.data) {
+        const data = error.response.data;
+        // NestJS typically returns { message: string } or { message: string[], error: string, statusCode: number }
+        if (typeof data.message === 'string') {
+          errorMessage = data.message;
+        } else if (Array.isArray(data.message)) {
+          errorMessage = data.message.join(', ');
+        } else if (data.error) {
+          errorMessage = data.error;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       message.error(
-        `Failed to ${isEditing ? 'update' : 'create'} funnel: ` +
-          (error.response?.data?.message || error.message)
+        `Failed to ${isEditing ? 'update' : 'create'} funnel: ${errorMessage}`
       );
+
+      console.error('Funnel operation error:', error.response?.data || error);
     }
   };
 

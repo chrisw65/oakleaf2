@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App as AntApp } from 'antd';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import MainLayout from './components/layout/MainLayout';
@@ -103,8 +103,9 @@ const App: React.FC = () => {
         },
       }}
     >
-      <AuthProvider>
-        <Router>
+      <AntApp>
+        <AuthProvider>
+          <Router>
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
@@ -184,8 +185,9 @@ const App: React.FC = () => {
             {/* Catch all - redirect to dashboard if authenticated, login otherwise */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
-        </Router>
-      </AuthProvider>
+          </Router>
+        </AuthProvider>
+      </AntApp>
     </ConfigProvider>
   );
 };

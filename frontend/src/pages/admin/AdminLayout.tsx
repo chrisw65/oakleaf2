@@ -9,6 +9,7 @@ import {
   MenuUnfoldOutlined,
   LogoutOutlined,
   CrownOutlined,
+  ArrowLeftOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
@@ -21,6 +22,12 @@ const AdminLayout: React.FC = () => {
   const location = useLocation();
 
   const menuItems = [
+    {
+      key: 'back-to-app',
+      icon: <ArrowLeftOutlined />,
+      label: 'Back to Main App',
+      style: { borderBottom: '1px solid rgba(255, 255, 255, 0.1)', marginBottom: 8 },
+    },
     {
       key: '/admin',
       icon: <DashboardOutlined />,
@@ -110,7 +117,13 @@ const AdminLayout: React.FC = () => {
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems}
-          onClick={({ key }) => navigate(key)}
+          onClick={({ key }) => {
+            if (key === 'back-to-app') {
+              navigate('/dashboard');
+            } else {
+              navigate(key);
+            }
+          }}
         />
       </Sider>
       <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'all 0.2s' }}>
