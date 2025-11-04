@@ -8,6 +8,8 @@ import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import ContactsPage from './pages/crm/ContactsPage';
+import ContactDetailPage from './pages/crm/ContactDetailPage';
+import TasksPage from './pages/crm/TasksPage';
 import OpportunitiesPage from './pages/crm/OpportunitiesPage';
 import PipelinesPage from './pages/crm/PipelinesPage';
 import CampaignsPage from './pages/email/CampaignsPage';
@@ -138,6 +140,8 @@ const App: React.FC = () => {
 
               {/* CRM Routes */}
               <Route path="contacts" element={<ContactsPage />} />
+              <Route path="contacts/:id" element={<ContactDetailPage />} />
+              <Route path="tasks" element={<TasksPage />} />
               <Route path="opportunities" element={<OpportunitiesPage />} />
               <Route path="pipelines" element={<PipelinesPage />} />
 
