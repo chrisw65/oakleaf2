@@ -59,27 +59,32 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto): Promise<TokenResponse> {
-    let tenantId: string | undefined = undefined;
+    // ALWAYS create a tenant for new registrations
+    // Use provided tenant name, or generate one from user's name/email
+    const tenantName = registerDto.tenantName ||
+                       `${registerDto.firstName || 'User'} ${registerDto.lastName || 'Account'}`.trim() ||
+                       registerDto.email.split('@')[0];
 
-    // Create tenant if tenant name is provided (new tenant registration)
-    if (registerDto.tenantName) {
-      const tenant = await this.tenantService.create({
-        name: registerDto.tenantName,
-        subdomain: registerDto.subdomain,
-        plan: TenantPlan.STARTER,
-      });
-      tenantId = tenant.id;
-    }
+    // Use provided subdomain, or generate one from email username
+    const subdomain = registerDto.subdomain ||
+                     registerDto.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
 
-    // Create user
+    // Create tenant - every user gets their own tenant
+    const tenant = await this.tenantService.create({
+      name: tenantName,
+      subdomain: subdomain,
+      plan: TenantPlan.STARTER,
+    });
+
+    // Create user as admin of their new tenant
     const user = await this.userService.create({
       email: registerDto.email,
       password: registerDto.password,
       firstName: registerDto.firstName,
       lastName: registerDto.lastName,
       phone: registerDto.phone,
-      tenantId,
-      role: tenantId ? UserRole.ADMIN : UserRole.USER, // First user is admin
+      tenantId: tenant.id,
+      role: UserRole.ADMIN, // First user is always admin of their tenant
     });
 
     // Generate email verification token
