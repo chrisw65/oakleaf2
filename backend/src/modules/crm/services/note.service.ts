@@ -4,7 +4,7 @@ import { Repository, FindOptionsWhere } from 'typeorm';
 import { Note } from '../note.entity';
 import { ContactActivityService } from './contact-activity.service';
 
-export interface CreateNoteDto {
+export class CreateNoteDto {
   content: string;
   noteType?: string;
   contactId?: string;
@@ -13,14 +13,14 @@ export interface CreateNoteDto {
   metadata?: Record<string, any>;
 }
 
-export interface UpdateNoteDto {
+export class UpdateNoteDto {
   content?: string;
   noteType?: string;
   isPinned?: boolean;
   metadata?: Record<string, any>;
 }
 
-export interface NoteFilterDto {
+export class NoteFilterDto {
   contactId?: string;
   opportunityId?: string;
   noteType?: string;

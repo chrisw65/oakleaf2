@@ -104,10 +104,10 @@ export class GdprController {
     await this.submissionRepository.update(
       { contactId: contact.id },
       {
-        data: { anonymized: true },
+        data: { anonymized: true } as any,
         ipAddress: 'REDACTED',
         userAgent: 'REDACTED',
-        contactId: null,
+        contactId: undefined,
         metadata: {
           anonymized: true,
           anonymizedAt: new Date().toISOString(),

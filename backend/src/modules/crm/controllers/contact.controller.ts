@@ -191,7 +191,7 @@ export class ContactController {
     @Query('limit') limit?: number,
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user?: any,
   ): Promise<{ data: ContactActivity[]; total: number; page: number; limit: number }> {
     const filters: ActivityFilterDto = {
       activityType,
@@ -258,7 +258,7 @@ export class ContactController {
     @Query('limit') limit?: number,
     @Query('noteType') noteType?: string,
     @Query('pinnedOnly') pinnedOnly?: boolean,
-    @CurrentUser() user: any,
+    @CurrentUser() user?: any,
   ): Promise<{ data: Note[]; total: number; page: number; limit: number }> {
     const filters: NoteFilterDto = {
       contactId,

@@ -12,7 +12,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FormSubmission, FormSubmissionStatus } from './page-form.entity';
-import { Contact } from '../crm/contact.entity';
+import { Contact, ContactSource } from '../crm/contact.entity';
 import { Page } from './page.entity';
 
 @ApiTags('form-submissions')
@@ -63,7 +63,7 @@ export class FormSubmissionController {
 
     // Create form submission with GDPR consent audit trail
     const submission = this.submissionRepository.create({
-      formId: null, // We'll use pageId as form identifier for now
+      formId: pageId, // We'll use pageId as form identifier for now
       data: body.data,
       status: FormSubmissionStatus.COMPLETED,
       ipAddress: body.consent?.ip || body.metadata?.ipAddress,
@@ -126,7 +126,7 @@ export class FormSubmissionController {
             lastName: body.data.lastName,
             phone: body.data.phone,
             status: 'lead' as any,
-            source: 'funnel',
+            source: ContactSource.LANDING_PAGE,
             tenantId: page.tenantId,
             metadata: {
               formSubmissionId: submission.id,

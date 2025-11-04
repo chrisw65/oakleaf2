@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere, Between, LessThan, MoreThan } from 'typeorm';
 import { Task, TaskStatus, TaskPriority, TaskType } from '../task.entity';
 
-export interface CreateTaskDto {
+export class CreateTaskDto {
   title: string;
   description?: string;
   taskType?: TaskType;
@@ -19,7 +19,7 @@ export interface CreateTaskDto {
   metadata?: Record<string, any>;
 }
 
-export interface UpdateTaskDto {
+export class UpdateTaskDto {
   title?: string;
   description?: string;
   taskType?: TaskType;
@@ -36,7 +36,7 @@ export interface UpdateTaskDto {
   outcome?: string;
 }
 
-export interface TaskFilterDto {
+export class TaskFilterDto {
   status?: TaskStatus;
   priority?: TaskPriority;
   taskType?: TaskType;
@@ -207,7 +207,7 @@ export class TaskService {
 
     // If uncompleting a task, clear completedAt
     if (updateTaskDto.status !== TaskStatus.COMPLETED && task.status === TaskStatus.COMPLETED) {
-      task.completedAt = null;
+      task.completedAt = undefined;
     }
 
     Object.assign(task, updateTaskDto);
