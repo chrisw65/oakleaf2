@@ -193,8 +193,8 @@ export class AnalyticsService {
       c.createdAt >= startOfMonth
     ).length;
 
-    const activeLeads = allContacts.filter(c => c.status === ContactStatus.LEAD).length;
-    const customers = allContacts.filter(c => c.status === ContactStatus.CUSTOMER).length;
+    const activeLeads = allContacts.filter(c => c.status === ContactStatus.ACTIVE && (c.score || 0) < 70).length;
+    const customers = allContacts.filter(c => c.status === ContactStatus.ACTIVE && (c.score || 0) >= 70).length;
 
     const totalScore = allContacts.reduce((sum, c) => sum + (c.score || 0), 0);
     const averageScore = allContacts.length > 0 ? totalScore / allContacts.length : 0;
@@ -300,7 +300,7 @@ export class AnalyticsService {
       return {
         stageId: stage.id,
         stageName: stage.name,
-        order: stage.order,
+        order: stage.position,
         opportunityCount: opportunities.length,
         totalValue,
         averageValue,

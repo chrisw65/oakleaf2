@@ -62,6 +62,44 @@ export interface ContactFilters {
   sortOrder?: 'ASC' | 'DESC';
 }
 
+// ADVANCED FILTERING
+export interface FilterCondition {
+  field: string;
+  operator: 'equals' | 'notEquals' | 'contains' | 'notContains' | 'greaterThan' | 'lessThan' | 'between' | 'in' | 'notIn' | 'isNull' | 'isNotNull';
+  value?: any;
+  values?: any[];
+}
+
+export interface FilterGroup {
+  logic: 'AND' | 'OR';
+  conditions: FilterCondition[];
+  groups?: FilterGroup[];
+}
+
+export interface SavedFilter {
+  id: string;
+  name: string;
+  entityType: string;
+  filterConfig: FilterGroup;
+  isPublic: boolean;
+  createdById: string;
+  description?: string;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateFilterDto {
+  name: string;
+  entityType: string;
+  filterConfig: FilterGroup;
+  isPublic?: boolean;
+  description?: string;
+  isDefault?: boolean;
+}
+
+export interface UpdateFilterDto extends Partial<CreateFilterDto> {}
+
 export interface PaginatedResponse<T> {
   data: T[];
   total: number;
@@ -674,6 +712,37 @@ class CrmService {
 
   async bulkRemoveTags(contactIds: string[], tagIds: string[]): Promise<{ updated: number }> {
     return apiService.post('/crm/contacts/bulk/remove-tags', { contactIds, tagIds });
+  }
+
+  // ============================================================================
+  // ADVANCED FILTERING & SAVED FILTERS
+  // ============================================================================
+
+  async createFilter(data: CreateFilterDto): Promise<SavedFilter> {
+    return apiService.post('/crm/filters', data);
+  }
+
+  async getFilters(entityType: string): Promise<SavedFilter[]> {
+    return apiService.get('/crm/filters', { params: { entityType } });
+  }
+
+  async getFilter(id: string): Promise<SavedFilter> {
+    return apiService.get(`/crm/filters/${id}`);
+  }
+
+  async updateFilter(id: string, data: UpdateFilterDto): Promise<SavedFilter> {
+    return apiService.put(`/crm/filters/${id}`, data);
+  }
+
+  async deleteFilter(id: string): Promise<{ message: string }> {
+    return apiService.delete(`/crm/filters/${id}`);
+  }
+
+  async applyFilter(id: string, page?: number, limit?: number): Promise<PaginatedResponse<Contact>> {
+    const params: any = {};
+    if (page) params.page = page;
+    if (limit) params.limit = limit;
+    return apiService.post(`/crm/filters/${id}/apply`, {}, { params });
   }
 }
 
