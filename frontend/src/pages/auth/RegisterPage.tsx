@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, message, Typography, Divider, Row, Col } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined, ShopOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -114,6 +114,18 @@ const RegisterPage: React.FC = () => {
             <Input
               prefix={<MailOutlined style={{ color: '#94a3b8' }} />}
               placeholder="you@example.com"
+              size="large"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Company Name (Optional)"
+            name="tenantName"
+            tooltip="Your company or organization name. If not provided, we'll use your name."
+          >
+            <Input
+              prefix={<ShopOutlined style={{ color: '#94a3b8' }} />}
+              placeholder="Acme Corp"
               size="large"
             />
           </Form.Item>
