@@ -55,7 +55,7 @@ export class TaskController {
     @Query('dueThisWeek') dueThisWeek?: boolean,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-    @CurrentUser() user: any,
+    @CurrentUser() user?: any,
   ): Promise<{ data: Task[]; total: number; page: number; limit: number }> {
     const filters: TaskFilterDto = {
       status: status as any,
@@ -82,7 +82,7 @@ export class TaskController {
     @Query('status') status?: string,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-    @CurrentUser() user: any,
+    @CurrentUser() user?: any,
   ): Promise<{ data: Task[]; total: number; page: number; limit: number }> {
     const filters: TaskFilterDto = {
       assignedToId: user.id,
@@ -106,7 +106,7 @@ export class TaskController {
   @ApiResponse({ status: 200, description: 'Upcoming tasks' })
   async getUpcoming(
     @Query('days') days?: number,
-    @CurrentUser() user: any,
+    @CurrentUser() user?: any,
   ): Promise<Task[]> {
     return this.taskService.getUpcoming(user.id, user.tenantId, days || 7);
   }
@@ -169,7 +169,7 @@ export class TaskController {
   async markComplete(
     @Param('id') id: string,
     @Body('outcome') outcome?: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user?: any,
   ): Promise<Task> {
     return this.taskService.markComplete(id, user.tenantId, outcome);
   }

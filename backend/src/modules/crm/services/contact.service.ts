@@ -482,4 +482,153 @@ export class ContactService {
       bySource,
     };
   }
+
+  // ============================================================================
+  // BULK OPERATIONS
+  // ============================================================================
+
+  /**
+   * Bulk update contacts
+   */
+  async bulkUpdate(
+    contactIds: string[],
+    updates: Partial<UpdateContactDto>,
+    tenantId: string,
+  ): Promise<{ updated: number; contacts: Contact[] }> {
+    if (!contactIds || contactIds.length === 0) {
+      throw new BadRequestException('No contact IDs provided');
+    }
+
+    // Verify all contacts belong to tenant
+    const contacts = await this.contactRepository.find({
+      where: {
+        id: In(contactIds),
+        tenantId,
+      },
+    });
+
+    if (contacts.length === 0) {
+      throw new NotFoundException('No contacts found');
+    }
+
+    // Apply updates to each contact
+    const updatedContacts: Contact[] = [];
+    for (const contact of contacts) {
+      Object.assign(contact, updates);
+      const saved = await this.contactRepository.save(contact);
+      updatedContacts.push(saved);
+    }
+
+    return {
+      updated: updatedContacts.length,
+      contacts: updatedContacts,
+    };
+  }
+
+  /**
+   * Bulk delete contacts
+   */
+  async bulkDelete(contactIds: string[], tenantId: string): Promise<{ deleted: number }> {
+    if (!contactIds || contactIds.length === 0) {
+      throw new BadRequestException('No contact IDs provided');
+    }
+
+    const result = await this.contactRepository.delete({
+      id: In(contactIds),
+      tenantId,
+    });
+
+    return {
+      deleted: result.affected || 0,
+    };
+  }
+
+  /**
+   * Bulk add tags to contacts
+   */
+  async bulkAddTags(
+    contactIds: string[],
+    tagIds: string[],
+    tenantId: string,
+  ): Promise<{ updated: number }> {
+    if (!contactIds || contactIds.length === 0) {
+      throw new BadRequestException('No contact IDs provided');
+    }
+
+    if (!tagIds || tagIds.length === 0) {
+      throw new BadRequestException('No tag IDs provided');
+    }
+
+    const contacts = await this.contactRepository.find({
+      where: {
+        id: In(contactIds),
+        tenantId,
+      },
+      relations: ['tags'],
+    });
+
+    const tags = await this.tagRepository.find({
+      where: {
+        id: In(tagIds),
+        tenantId,
+      },
+    });
+
+    if (tags.length === 0) {
+      throw new NotFoundException('No tags found');
+    }
+
+    let updated = 0;
+    for (const contact of contacts) {
+      // Add tags that don't already exist
+      const existingTagIds = contact.tags?.map(t => t.id) || [];
+      const newTags = tags.filter(t => !existingTagIds.includes(t.id));
+
+      if (newTags.length > 0) {
+        contact.tags = [...(contact.tags || []), ...newTags];
+        await this.contactRepository.save(contact);
+        updated++;
+      }
+    }
+
+    return { updated };
+  }
+
+  /**
+   * Bulk remove tags from contacts
+   */
+  async bulkRemoveTags(
+    contactIds: string[],
+    tagIds: string[],
+    tenantId: string,
+  ): Promise<{ updated: number }> {
+    if (!contactIds || contactIds.length === 0) {
+      throw new BadRequestException('No contact IDs provided');
+    }
+
+    if (!tagIds || tagIds.length === 0) {
+      throw new BadRequestException('No tag IDs provided');
+    }
+
+    const contacts = await this.contactRepository.find({
+      where: {
+        id: In(contactIds),
+        tenantId,
+      },
+      relations: ['tags'],
+    });
+
+    let updated = 0;
+    for (const contact of contacts) {
+      const originalTagCount = contact.tags?.length || 0;
+      contact.tags = contact.tags?.filter(t => !tagIds.includes(t.id)) || [];
+
+      if (contact.tags.length < originalTagCount) {
+        await this.contactRepository.save(contact);
+        updated++;
+      }
+    }
+
+    return { updated };
+  }
 }

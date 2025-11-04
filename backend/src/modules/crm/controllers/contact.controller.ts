@@ -191,7 +191,7 @@ export class ContactController {
     @Query('limit') limit?: number,
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user?: any,
   ): Promise<{ data: ContactActivity[]; total: number; page: number; limit: number }> {
     const filters: ActivityFilterDto = {
       activityType,
@@ -258,7 +258,7 @@ export class ContactController {
     @Query('limit') limit?: number,
     @Query('noteType') noteType?: string,
     @Query('pinnedOnly') pinnedOnly?: boolean,
-    @CurrentUser() user: any,
+    @CurrentUser() user?: any,
   ): Promise<{ data: Note[]; total: number; page: number; limit: number }> {
     const filters: NoteFilterDto = {
       contactId,
@@ -334,5 +334,49 @@ export class ContactController {
     @CurrentUser() user: any,
   ): Promise<Note> {
     return this.noteService.togglePin(noteId, user.id, user.tenantId);
+  }
+
+  // ============================================================================
+  // BULK OPERATIONS
+  // ============================================================================
+
+  @Post('bulk/update')
+  @ApiOperation({ summary: 'Bulk update contacts' })
+  @ApiResponse({ status: 200, description: 'Contacts updated successfully' })
+  async bulkUpdate(
+    @Body() body: { contactIds: string[]; updates: any },
+    @CurrentUser() user?: any,
+  ): Promise<{ updated: number; contacts: Contact[] }> {
+    return this.contactService.bulkUpdate(body.contactIds, body.updates, user.tenantId);
+  }
+
+  @Post('bulk/delete')
+  @ApiOperation({ summary: 'Bulk delete contacts' })
+  @ApiResponse({ status: 200, description: 'Contacts deleted successfully' })
+  async bulkDelete(
+    @Body() body: { contactIds: string[] },
+    @CurrentUser() user?: any,
+  ): Promise<{ deleted: number }> {
+    return this.contactService.bulkDelete(body.contactIds, user.tenantId);
+  }
+
+  @Post('bulk/add-tags')
+  @ApiOperation({ summary: 'Bulk add tags to contacts' })
+  @ApiResponse({ status: 200, description: 'Tags added successfully' })
+  async bulkAddTags(
+    @Body() body: { contactIds: string[]; tagIds: string[] },
+    @CurrentUser() user?: any,
+  ): Promise<{ updated: number }> {
+    return this.contactService.bulkAddTags(body.contactIds, body.tagIds, user.tenantId);
+  }
+
+  @Post('bulk/remove-tags')
+  @ApiOperation({ summary: 'Bulk remove tags from contacts' })
+  @ApiResponse({ status: 200, description: 'Tags removed successfully' })
+  async bulkRemoveTags(
+    @Body() body: { contactIds: string[]; tagIds: string[] },
+    @CurrentUser() user?: any,
+  ): Promise<{ updated: number }> {
+    return this.contactService.bulkRemoveTags(body.contactIds, body.tagIds, user.tenantId);
   }
 }

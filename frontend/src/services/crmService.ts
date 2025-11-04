@@ -278,6 +278,84 @@ export interface UpdateTaskDto extends Partial<CreateTaskDto> {
   outcome?: string;
 }
 
+// ANALYTICS
+export interface DashboardMetrics {
+  pipeline: {
+    totalValue: number;
+    totalCount: number;
+    wonValue: number;
+    wonCount: number;
+    lostValue: number;
+    lostCount: number;
+    activeValue: number;
+    activeCount: number;
+    winRate: number;
+    averageDealSize: number;
+    byStage: Array<{
+      stageName: string;
+      count: number;
+      value: number;
+    }>;
+  };
+  tasks: {
+    total: number;
+    overdue: number;
+    dueToday: number;
+    completed: number;
+    completionRate: number;
+  };
+  contacts: {
+    total: number;
+    newThisMonth: number;
+    activeLeads: number;
+    customers: number;
+    averageScore: number;
+  };
+  forecast: {
+    currentMonth: number;
+    nextMonth: number;
+    currentQuarter: number;
+  };
+}
+
+export interface PipelineHealthReport {
+  pipelineId: string;
+  pipelineName: string;
+  stages: Array<{
+    stageId: string;
+    stageName: string;
+    order: number;
+    opportunityCount: number;
+    totalValue: number;
+    averageValue: number;
+    averageDaysInStage: number;
+    stalledCount: number;
+    conversionRate: number;
+  }>;
+  totalOpportunities: number;
+  totalValue: number;
+  averageDealSize: number;
+  medianDealSize: number;
+  velocity: number;
+}
+
+export interface RepPerformanceReport {
+  userId: string;
+  userName: string;
+  metrics: {
+    opportunitiesOwned: number;
+    opportunitiesWon: number;
+    opportunitiesLost: number;
+    totalValue: number;
+    wonValue: number;
+    winRate: number;
+    averageDealSize: number;
+    tasksCompleted: number;
+    tasksOverdue: number;
+    activitiesLogged: number;
+  };
+}
+
 // ============================================================================
 // CRM SERVICE
 // ============================================================================
@@ -559,6 +637,43 @@ class CrmService {
 
   async updateTaskDueDate(id: string, dueDate: string): Promise<Task> {
     return apiService.put(`/crm/tasks/${id}/due-date`, { dueDate });
+  }
+
+  // ============================================================================
+  // ANALYTICS METHODS
+  // ============================================================================
+
+  async getDashboardMetrics(userId?: string): Promise<DashboardMetrics> {
+    const params = userId ? { userId } : {};
+    return apiService.get('/crm/analytics/dashboard', { params });
+  }
+
+  async getPipelineHealthReport(pipelineId: string): Promise<PipelineHealthReport> {
+    return apiService.get(`/crm/analytics/pipeline-health/${pipelineId}`);
+  }
+
+  async getRepPerformanceReport(): Promise<RepPerformanceReport[]> {
+    return apiService.get('/crm/analytics/rep-performance');
+  }
+
+  // ============================================================================
+  // BULK OPERATIONS
+  // ============================================================================
+
+  async bulkUpdateContacts(contactIds: string[], updates: Partial<UpdateContactDto>): Promise<{ updated: number; contacts: Contact[] }> {
+    return apiService.post('/crm/contacts/bulk/update', { contactIds, updates });
+  }
+
+  async bulkDeleteContacts(contactIds: string[]): Promise<{ deleted: number }> {
+    return apiService.post('/crm/contacts/bulk/delete', { contactIds });
+  }
+
+  async bulkAddTags(contactIds: string[], tagIds: string[]): Promise<{ updated: number }> {
+    return apiService.post('/crm/contacts/bulk/add-tags', { contactIds, tagIds });
+  }
+
+  async bulkRemoveTags(contactIds: string[], tagIds: string[]): Promise<{ updated: number }> {
+    return apiService.post('/crm/contacts/bulk/remove-tags', { contactIds, tagIds });
   }
 }
 

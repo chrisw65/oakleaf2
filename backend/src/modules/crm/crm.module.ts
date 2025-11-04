@@ -20,12 +20,14 @@ import { TagService } from './services/tag.service';
 import { CustomFieldService } from './services/custom-field.service';
 import { PipelineService } from './services/pipeline.service';
 import { OpportunityService } from './services/opportunity.service';
+import { AnalyticsService } from './services/analytics.service';
 import { ContactController } from './controllers/contact.controller';
 import { TagController } from './controllers/tag.controller';
 import { CustomFieldController } from './controllers/custom-field.controller';
 import { PipelineController } from './controllers/pipeline.controller';
 import { OpportunityController } from './controllers/opportunity.controller';
 import { TaskController } from './controllers/task.controller';
+import { AnalyticsController } from './controllers/analytics.controller';
 
 @Module({
   imports: [
@@ -49,6 +51,7 @@ import { TaskController } from './controllers/task.controller';
     PipelineController,
     OpportunityController,
     TaskController,
+    AnalyticsController,
   ],
   providers: [
     ContactService,
@@ -59,6 +62,7 @@ import { TaskController } from './controllers/task.controller';
     CustomFieldService,
     PipelineService,
     OpportunityService,
+    AnalyticsService,
   ],
   exports: [
     ContactService,

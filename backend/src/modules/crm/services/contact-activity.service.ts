@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere } from 'typeorm';
-import { ContactActivity } from './contact.entity';
+import { ContactActivity } from '../contact.entity';
 
-export interface CreateActivityDto {
+export class CreateActivityDto {
   contactId: string;
   activityType: string;
   title?: string;
@@ -13,7 +13,7 @@ export interface CreateActivityDto {
   occurredAt?: Date;
 }
 
-export interface ActivityFilterDto {
+export class ActivityFilterDto {
   activityType?: string;
   userId?: string;
   fromDate?: Date;
