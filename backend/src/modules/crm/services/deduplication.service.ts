@@ -10,7 +10,7 @@ export interface DuplicateGroup {
   confidence: 'high' | 'medium' | 'low';
 }
 
-export interface MergeContactsDto {
+export class MergeContactsDto {
   primaryContactId: string;
   duplicateContactIds: string[];
   mergeStrategy?: {
