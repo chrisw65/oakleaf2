@@ -14,14 +14,6 @@ export class CreateFilterDto {
 }
 
 export type UpdateFilterDto = Partial<CreateFilterDto>;
-export class UpdateFilterDto {
-  name?: string;
-  entityType?: string;
-  filterConfig?: FilterGroup;
-  isPublic?: boolean;
-  description?: string;
-  isDefault?: boolean;
-}
 
 @Injectable()
 export class FilterService {
@@ -160,7 +152,6 @@ export class FilterService {
    */
   private applyCondition(
     qb: WhereExpressionBuilder,
-    qb: any,
     condition: FilterCondition,
     paramName: string,
   ): void {
