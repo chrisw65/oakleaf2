@@ -10,6 +10,7 @@ import DashboardPage from './pages/dashboard/DashboardPage';
 import ContactsPage from './pages/crm/ContactsPage';
 import ContactDetailPage from './pages/crm/ContactDetailPage';
 import TasksPage from './pages/crm/TasksPage';
+import CRMDashboardPage from './pages/crm/CRMDashboardPage';
 import OpportunitiesPage from './pages/crm/OpportunitiesPage';
 import PipelinesPage from './pages/crm/PipelinesPage';
 import CampaignsPage from './pages/email/CampaignsPage';
@@ -139,6 +140,7 @@ const App: React.FC = () => {
               <Route path="dashboard" element={<DashboardPage />} />
 
               {/* CRM Routes */}
+              <Route path="crm/dashboard" element={<CRMDashboardPage />} />
               <Route path="contacts" element={<ContactsPage />} />
               <Route path="contacts/:id" element={<ContactDetailPage />} />
               <Route path="tasks" element={<TasksPage />} />

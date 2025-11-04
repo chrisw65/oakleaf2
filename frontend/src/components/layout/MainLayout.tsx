@@ -65,6 +65,7 @@ const MainLayout: React.FC = () => {
       icon: <TeamOutlined />,
       label: 'CRM',
       children: [
+        { key: '/crm/dashboard', label: 'CRM Dashboard' },
         { key: '/contacts', label: 'Contacts' },
         { key: '/tasks', label: 'Tasks' },
         { key: '/opportunities', label: 'Opportunities' },
