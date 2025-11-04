@@ -364,7 +364,7 @@ const FunnelBuilderPage: React.FC = () => {
                                       <div>Conv: {page.conversions?.toLocaleString() || 0}</div>
                                     </div>
                                     <div style={{ textAlign: 'right' }}>
-                                      <div>Rate: {(page.conversionRate || 0).toFixed(1)}%</div>
+                                      <div>Rate: {(typeof page.conversionRate === 'number' ? page.conversionRate : 0).toFixed(1)}%</div>
                                       {page.isPublished ? (
                                         <Tag color="success" style={{ marginTop: 4 }}>Published</Tag>
                                       ) : (
