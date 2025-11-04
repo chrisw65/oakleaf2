@@ -1,0 +1,103 @@
+
+  // ===== NEW ENHANCED ADMIN ENDPOINTS =====
+
+  @Get('dashboard/enhanced-stats')
+  @RequirePermissions('settings:read')
+  @ApiOperation({ summary: 'Get enhanced dashboard statistics with real data' })
+  @ApiResponse({ status: 200, description: 'Enhanced statistics retrieved' })
+  async getEnhancedDashboardStats() {
+    const stats = await this.dashboardService.getDashboardStats();
+    return { success: true, data: stats };
+  }
+
+  @Get('dashboard/enhanced-activity')
+  @RequirePermissions('settings:read')
+  @ApiOperation({ summary: 'Get recent activity logs' })
+  @ApiResponse({ status: 200, description: 'Activity logs retrieved' })
+  async getEnhancedActivity(@Query('limit') limit?: string) {
+    const activity = await this.dashboardService.getRecentActivity(limit ? parseInt(limit) : 20);
+    return { success: true, data: activity };
+  }
+
+  @Get('dashboard/enhanced-analytics')
+  @RequirePermissions('settings:read')
+  @ApiOperation({ summary: 'Get analytics data for charts' })
+  @ApiResponse({ status: 200, description: 'Analytics data retrieved' })
+  async getEnhancedAnalytics(@Query('days') days?: string) {
+    const analytics = await this.dashboardService.getAnalyticsData(days ? parseInt(days) : 30);
+    return { success: true, data: analytics };
+  }
+
+  // ===== USER MANAGEMENT ENDPOINTS =====
+
+  @Get('users')
+  @RequirePermissions('settings:write')
+  @ApiOperation({ summary: 'Get all users (Admin only)' })
+  @ApiResponse({ status: 200, description: 'Users retrieved' })
+  async getAllUsers(@Query('tenantId') tenantId?: string) {
+    const users = await this.usersService.getAllUsers(tenantId);
+    return { success: true, data: users, total: users.length };
+  }
+
+  @Get('users/search')
+  @RequirePermissions('settings:write')
+  @ApiOperation({ summary: 'Search users (Admin only)' })
+  @ApiResponse({ status: 200, description: 'Search results' })
+  async searchUsers(@Query('q') query: string) {
+    const users = await this.usersService.searchUsers(query);
+    return { success: true, data: users, total: users.length };
+  }
+
+  @Get('users/:id')
+  @RequirePermissions('settings:write')
+  @ApiOperation({ summary: 'Get user by ID (Admin only)' })
+  @ApiResponse({ status: 200, description: 'User retrieved' })
+  async getUserById(@Param('id') id: string) {
+    const user = await this.usersService.getUserById(id);
+    return { success: true, data: user };
+  }
+
+  @Put('users/:id')
+  @RequirePermissions('settings:write')
+  @ApiOperation({ summary: 'Update user (Admin only)' })
+  @ApiResponse({ status: 200, description: 'User updated' })
+  async updateUser(@Param('id') id: string, @Body() updateDto: any) {
+    const user = await this.usersService.updateUser(id, updateDto);
+    return { success: true, data: user, message: 'User updated successfully' };
+  }
+
+  @Post('users/:id/promote')
+  @RequirePermissions('settings:write')
+  @ApiOperation({ summary: 'Promote user to admin (Admin only)' })
+  @ApiResponse({ status: 200, description: 'User promoted' })
+  async promoteToAdmin(@Param('id') id: string) {
+    const user = await this.usersService.promoteToAdmin(id);
+    return { success: true, data: user, message: 'User promoted to admin successfully' };
+  }
+
+  @Post('users/:id/demote')
+  @RequirePermissions('settings:write')
+  @ApiOperation({ summary: 'Demote admin to user (Admin only)' })
+  @ApiResponse({ status: 200, description: 'User demoted' })
+  async demoteToUser(@Param('id') id: string) {
+    const user = await this.usersService.demoteToUser(id);
+    return { success: true, data: user, message: 'User demoted successfully' };
+  }
+
+  @Put('users/:id/status')
+  @RequirePermissions('settings:write')
+  @ApiOperation({ summary: 'Activate/deactivate user (Admin only)' })
+  @ApiResponse({ status: 200, description: 'Status updated' })
+  async updateUserStatus(@Param('id') id: string, @Body() updateDto: any) {
+    const user = await this.usersService.updateUserStatus(id, updateDto);
+    return { success: true, data: user, message: 'User status updated successfully' };
+  }
+
+  @Delete('users/:id')
+  @RequirePermissions('settings:write')
+  @ApiOperation({ summary: 'Delete user (Admin only)' })
+  @ApiResponse({ status: 200, description: 'User deleted' })
+  async deleteUser(@Param('id') id: string) {
+    await this.usersService.deleteUser(id);
+    return { success: true, message: 'User deleted successfully' };
+  }
