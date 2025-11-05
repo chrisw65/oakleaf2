@@ -19,7 +19,7 @@ const PublicPage: React.FC = () => {
   const loadPage = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/v1/p/${funnelSlug}/${pageSlug}`
+        `${process.env.REACT_APP_API_URL || 'http://localhost:3001'}/api/v1/p/${funnelSlug}/${pageSlug}`
       );
       setPage(response.data);
 

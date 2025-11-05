@@ -276,7 +276,7 @@ const OptInFormElement: React.FC<{ element: PageElement; style: any }> = ({ elem
       }
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/v1/form-submissions/public/${pageId}`,
+        `${process.env.REACT_APP_API_URL || 'http://localhost:3001'}/api/v1/form-submissions/public/${pageId}`,
         {
           data: values,
           consent: {

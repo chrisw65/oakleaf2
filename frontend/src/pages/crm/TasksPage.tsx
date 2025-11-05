@@ -128,8 +128,8 @@ const TasksPage: React.FC = () => {
     return colors[priority];
   };
 
-  const getStatusColor = (status: TaskStatus) => {
-    const colors: Record<TaskStatus, string> = {
+  const getStatusColor = (status: TaskStatus): 'default' | 'processing' | 'success' | 'error' => {
+    const colors: Record<TaskStatus, 'default' | 'processing' | 'success' | 'error'> = {
       [TaskStatus.TODO]: 'default',
       [TaskStatus.IN_PROGRESS]: 'processing',
       [TaskStatus.COMPLETED]: 'success',
